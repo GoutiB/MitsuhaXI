@@ -22,6 +22,10 @@ Should be compatible with EclipseX and similar tweaks. Spotify version is confir
 
 Feel free to [open a new issue](https://github.com/Ominousness/MitsuhaXI/issues/new).
 
-## Upcoming features
+## Donations
 
-* Customization (color + style)
+Support the original developer here: https://www.paypal.me/c0ldra1n
+
+## Credits
+
+* [c0ldra1n](https://github.com/c0ldra1n/) - developed the original tweak for iOS 10 and earlier.

@@ -1,9 +1,9 @@
-Package: io.c0ldra1n.mitsuhaxi-beta
-Name: MitsuhaXI (Beta)
+Package: io.ominousness.mitsuhaxi
+Name: MitsuhaXI
 Depends: mobilesubstrate
-Version: 0.0.5
+Version: 0.2.0
 Architecture: iphoneos-arm
-Description: Jell-O wave effect for Apple Music (iOS 11 Compatible)
+Description: Jell-O wave effect for Apple Music and Spotify (iOS 11 Compatible)
 Maintainer: Ominousness
 Author: c0ldra1n
 Section: Tweaks
