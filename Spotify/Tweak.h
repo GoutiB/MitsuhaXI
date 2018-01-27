@@ -33,13 +33,17 @@
 
 @end
 
-@interface SPTNowPlayingBackgroundMusicViewController : UIViewController
-
+@interface SPTUniversalController : UIViewController
 @property(retain, nonatomic) SPTCarouselBlurBackgroundView *backgroundView; // @synthesize backgroundView=_backgroundView;
-
 @property (nonatomic, retain) MSHJelloView *mitsuhaJelloView;
-
 -(void)applyCustomLayout;
+@end
+
+@interface SPTNowPlayingShowsFormatBackgroundViewController : SPTUniversalController
+
+@end
+
+@interface SPTNowPlayingBackgroundMusicViewController : SPTUniversalController
 
 @end
 

@@ -126,6 +126,7 @@ static UIColor* settingsToUIColor(NSString *input) {
         }
 
         prefs[@"subwaveColor"] = prefs[@"waveColor"];
+        prefs[@"gain"] = [prefs objectForKey:@"gain"] ?: @(200);
         prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     }
     
