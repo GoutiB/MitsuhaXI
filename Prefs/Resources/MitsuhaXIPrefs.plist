@@ -28,6 +28,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>label</key>
+			<string>Enable FFT (experimental)</string>
+			<key>key</key>
+			<string>MSHMusicEnableFFT</string>
+			<key>alternateColors</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSLinkListCell</string>
 			<key>default</key>
 			<string>red</string>
@@ -101,6 +115,20 @@
 			<string>Enabled</string>
 			<key>key</key>
 			<string>MSHSpotifyEnabled</string>
+			<key>alternateColors</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>label</key>
+			<string>Enable FFT (experimental)</string>
+			<key>key</key>
+			<string>MSHSpotifyEnableFFT</string>
 			<key>alternateColors</key>
 			<true/>
 		</dict>

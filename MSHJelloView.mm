@@ -9,6 +9,7 @@
 #import "MSHJelloView.h"
 #import "MSHUtils.h"
 #import <substrate.h>
+#include <Accelerate/Accelerate.h>
 
 static CGPoint midPointForPoints(CGPoint p1, CGPoint p2) {
     return CGPointMake((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -58,6 +59,7 @@ static UIColor* settingsToUIColor(NSString *input) {
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
+        _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
         
         UIColor * (*LCPParseColorString)(NSString *, NSString *) = (UIColor * (*)(NSString *, NSString *))dlsym(RTLD_DEFAULT, "LCPParseColorString");
         
@@ -284,7 +286,41 @@ static UIColor* settingsToUIColor(NSString *input) {
 }
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
-    [self setSampleData:bufferData length:length];
+    if (self.config.enableFFT && length > 1) {
+        UInt32 numberOfFrames = 4096;
+
+        int bufferLog2 = round(log2(numberOfFrames));
+        float fftNormFactor = 1.0/32.0;
+        
+        FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+        
+        int numberOfFramesOver2 = numberOfFrames / 2;
+        float outReal[numberOfFramesOver2];
+        float outImaginary[numberOfFramesOver2];
+        
+        COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
+        vDSP_ctoz((COMPLEX *)bufferData, 2, &output, 1, numberOfFramesOver2);
+        vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
+        vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
+        vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
+        vDSP_destroy_fftsetup(fftSetup);
+
+        float out[numberOfFramesOver2];
+
+        //int numberOfFramesOver4 = numberOfFramesOver2 / 2;
+
+        for (int i = 0; i < numberOfFramesOver2; i++) {
+            out[i] = -1 * pow(pow(outReal[i], 2) + pow(outImaginary[i], 2), 0.5);
+        }
+
+        //for (int i = 0; i < numberOfFramesOver2; i++) {
+        //    out[numberOfFramesOver4 + i] = out[numberOfFramesOver4 - i];
+        //}
+
+        [self setSampleData:out length:numberOfFramesOver2];
+    } else {
+        [self setSampleData:bufferData length:length];
+    }
 }
 
 - (void)setSampleData:(float *)data length:(int)length{

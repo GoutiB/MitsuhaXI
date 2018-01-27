@@ -14,6 +14,7 @@
 
 @property BOOL enableDisplayLink;
 @property BOOL enableDynamicGain;
+@property BOOL enableFFT;
 @property double gain;
 @property double limiter;
 
