@@ -175,9 +175,9 @@ static AVMutableAudioMix *audioMix;
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Music"];
     if (!config.enabled) return;
     
-    config.waveOffset += 150;
-    //float offset = config.waveOffset;
-    CGFloat height = CGRectGetHeight(self.view.bounds)/2 + 5;
+    config.waveOffset += 70;
+    CGFloat height = CGRectGetHeight(self.view.bounds);
+    self.view.clipsToBounds = 1;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
     
