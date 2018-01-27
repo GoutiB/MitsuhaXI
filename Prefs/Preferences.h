@@ -4,3 +4,8 @@
 @interface MSHPrefsListController : PSListController
     - (void)visitGithub:(id)sender;
 @end
+
+@interface HeaderCell : PSTableCell{
+	UIImageView *_background;
+}
+@end
