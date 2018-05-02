@@ -265,15 +265,13 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     return CGPathCreateCopy(convertedPath);
 }
 
--(void)updateBuffer:(float *)bufferData withLength:(int)length{
-    if (self.config.enableFFT && length > 1) {
-        UInt32 numberOfFrames = 4096;
+const UInt32 numberOfFrames = 4096;
+const int bufferLog2 = round(log2(numberOfFrames));
+const float fftNormFactor = 1.0/32.0;
+const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 
-        int bufferLog2 = round(log2(numberOfFrames));
-        float fftNormFactor = 1.0/32.0;
-        
-        FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
-        
+-(void)updateBuffer:(float *)bufferData withLength:(int)length{
+    if (self.config.enableFFT && length >= 4096) {
         int numberOfFramesOver2 = numberOfFrames / 2;
         float outReal[numberOfFramesOver2];
         float outImaginary[numberOfFramesOver2];
@@ -283,19 +281,8 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
         vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
         vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
-        vDSP_destroy_fftsetup(fftSetup);
-
         float out[numberOfFramesOver2];
-
-        //int numberOfFramesOver4 = numberOfFramesOver2 / 2;
-
-        for (int i = 0; i < numberOfFramesOver2; i++) {
-            out[i] = -1 * pow(pow(outReal[i], 2) + pow(outImaginary[i], 2), 0.5);
-        }
-
-        //for (int i = 0; i < numberOfFramesOver2; i++) {
-        //    out[numberOfFramesOver4 + i] = out[numberOfFramesOver4 - i];
-        //}
+        vDSP_zvabs(&output, 1, out, 1, numberOfFramesOver2);
 
         [self setSampleData:out length:numberOfFramesOver2];
     } else {
@@ -329,7 +316,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
             pureValue = (fabs(pureValue) < self.config.limiter ? pureValue : (pureValue < 0 ? -1*self.config.limiter : self.config.limiter));
         }
         
-        self.points[i].y = pureValue + self.config.waveOffset;// + self.bounds.size.height/2;
+        self.points[i].y = (-1 * pureValue) + self.config.waveOffset;// + self.bounds.size.height/2;
     }
     
 #endif
