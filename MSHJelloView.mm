@@ -41,8 +41,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
         
-        UIColor * (*LCPParseColorString)(NSString *, NSString *) = (UIColor * (*)(NSString *, NSString *))dlsym(RTLD_DEFAULT, "LCPParseColorString");
-        
         if([dict objectForKey:@"waveColor"]){
             if([[dict objectForKey:@"waveColor"] isKindOfClass:[UIColor class]]){
                 _waveColor = [dict objectForKey:@"waveColor"];
@@ -265,13 +263,13 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     return CGPathCreateCopy(convertedPath);
 }
 
-const UInt32 numberOfFrames = 4096;
+const UInt32 numberOfFrames = 512;
 const int bufferLog2 = round(log2(numberOfFrames));
 const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
-    if (self.config.enableFFT && length >= 4096) {
+    if (self.config.enableFFT && length >= numberOfFrames) {
         int numberOfFramesOver2 = numberOfFrames / 2;
         float outReal[numberOfFramesOver2];
         float outImaginary[numberOfFramesOver2];
