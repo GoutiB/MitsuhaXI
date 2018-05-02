@@ -6,6 +6,7 @@ $(BUNDLE_NAME)_FILES = Preferences.m
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 $(BUNDLE_NAME)_FRAMEWORKS = UIKit
 $(BUNDLE_NAME)_PRIVATE_FRAMEWORKS = Preferences
+$(BUNDLE_NAME)_LIBRARIES += colorpicker
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

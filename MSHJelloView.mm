@@ -10,6 +10,7 @@
 #import "MSHUtils.h"
 #import <substrate.h>
 #include <Accelerate/Accelerate.h>
+#include <libcolorpicker.h>
 
 static CGPoint midPointForPoints(CGPoint p1, CGPoint p2) {
     return CGPointMake((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -25,27 +26,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         controlPoint.y -= diffY;
     
     return controlPoint;
-}
-
-//Don't want to introduce dependencies for now. (no libcolorpicker :c)
-//Ugly but gets the job done (for now).
-static UIColor* settingsToUIColor(NSString *input) {
-    if ([input isEqualToString:@"#fc3059:0.1"]) {
-        return [UIColor colorWithRed:0.99 green:0.19 blue:0.35 alpha:0.1];
-    }
-    if ([input isEqualToString:@"#003059:0.1"]) {
-        return [UIColor colorWithRed:0.00 green:0.19 blue:0.35 alpha:0.1];
-    }
-    if ([input isEqualToString:@"#fcfcfc:0.2"]) {
-        return [UIColor colorWithRed:0.99 green:0.99 blue:0.99 alpha:0.2];
-    }
-    if ([input isEqualToString:@"#000000:0.05"]) {
-        return [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.05];
-    }
-    if ([input isEqualToString:@"#000000:0.9"]) {
-        return [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.9];
-    }
-    return [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.5];
 }
 
 @implementation MSHJelloViewConfig
@@ -110,10 +90,10 @@ static UIColor* settingsToUIColor(NSString *input) {
     }
     
     if ([name isEqualToString:@"Music"]) {
-        prefs[@"waveColor"] = settingsToUIColor([prefs objectForKey:@"waveColor"]) ?: settingsToUIColor(@"#fc3059:0.1");
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.1");
         
         if ([(prefs[@"useDefaultColors"] ?: @(NO)) boolValue]) {
-            prefs[@"waveColor"] = settingsToUIColor(@"#fc3059:0.1");
+            prefs[@"waveColor"] = [UIColor colorWithRed:0.99 green:0.19 blue:0.35 alpha:0.1];
         }
 
         prefs[@"subwaveColor"] = prefs[@"waveColor"];
@@ -121,10 +101,10 @@ static UIColor* settingsToUIColor(NSString *input) {
     }
     
     if ([name isEqualToString:@"Spotify"]){
-        prefs[@"waveColor"] = settingsToUIColor([prefs objectForKey:@"waveColor"]) ?: settingsToUIColor(@"#fcfcfc:0.2");
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
         
         if ([(prefs[@"useDefaultColors"] ?: @(NO)) boolValue]) {
-            prefs[@"waveColor"] = settingsToUIColor(@"#fcfcfc:0.2");
+            prefs[@"waveColor"] = [UIColor colorWithRed:0.99 green:0.99 blue:0.99 alpha:0.2];
         }
 
         prefs[@"subwaveColor"] = prefs[@"waveColor"];
