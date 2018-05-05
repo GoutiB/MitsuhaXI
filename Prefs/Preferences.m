@@ -16,4 +16,12 @@
 - (void)donate:(id)sender {
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.me/c0ldra1n"] options:@{} completionHandler:nil];
 }
+
+- (void)respring:(id)sender {
+	system("killall backboardd");
+}
+
+- (void)restartmsd:(id)sender {
+	system("killall mediaserverd");
+}
 @end

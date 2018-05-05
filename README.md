@@ -6,7 +6,7 @@ This is a fork of c0ldra1n's excellent tweak - [Mitsuha2](https://github.com/c0l
 
 **iOS 11.0-11.1.2 required.**
 
-**Only Apple Music and Spotify are supported at the moment.**
+**Supports: Springboard, Apple Music, Spotify.**
 
 1. Make sure [Electra](https://coolstar.org/electra/) is installed.
 2. Grab the latest build from [Releases](https://github.com/Ominousness/MitsuhaXI/releases).

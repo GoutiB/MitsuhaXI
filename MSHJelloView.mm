@@ -99,6 +99,11 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10));
     }
 
+    if ([name isEqualToString:@"Springboard"]){
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
+        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60));
+    }
+
     prefs[@"subwaveColor"] = prefs[@"waveColor"];
     prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     

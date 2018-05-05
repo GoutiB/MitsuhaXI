@@ -1,9 +1,9 @@
 Package: io.ominousness.mitsuhaxi
-Name: MitsuhaXIß
+Name: MitsuhaXI
 Depends: mobilesubstrate
-Version: 0.3.0
+Version: 0.4.0
 Architecture: iphoneos-arm
-Description: iOS 11 audio visualizer for Apple Music and Spotify
+Description: iOS 11 audio visualizer for Apple Music, Spotify and the Springboard
 Maintainer: Ominousness
 Author: c0ldra1n & Ominousness
 Section: Tweaks
