@@ -90,27 +90,17 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     
     if ([name isEqualToString:@"Music"]) {
         prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.1");
-        
-        if ([(prefs[@"useDefaultColors"] ?: @(NO)) boolValue]) {
-            prefs[@"waveColor"] = [UIColor colorWithRed:0.99 green:0.19 blue:0.35 alpha:0.1];
-        }
-
-        prefs[@"subwaveColor"] = prefs[@"waveColor"];
-        prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
+        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60));
     }
     
     if ([name isEqualToString:@"Spotify"]){
         prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
-        
-        if ([(prefs[@"useDefaultColors"] ?: @(NO)) boolValue]) {
-            prefs[@"waveColor"] = [UIColor colorWithRed:0.99 green:0.99 blue:0.99 alpha:0.2];
-        }
-
-        prefs[@"subwaveColor"] = prefs[@"waveColor"];
         prefs[@"gain"] = [prefs objectForKey:@"gain"] ?: @(200);
-        prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
         prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10));
     }
+
+    prefs[@"subwaveColor"] = prefs[@"waveColor"];
+    prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
     

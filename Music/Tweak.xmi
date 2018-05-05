@@ -1,18 +1,5 @@
-
-//
-//  Tweak.xmi
-//  Mitsuha2
-//
-//
-
 #import "Tweak.h"
 #import "../MSHUtils.h"
-#import <sys/socket.h>
-#import <sys/un.h>
-#import <unistd.h>
-
-#import <netinet/in.h>
-#import <netdb.h>
 #import <arpa/inet.h>
 
 UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
@@ -83,7 +70,7 @@ int connfd = -1;
     }
     
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateFrame:)];
-    self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = 20;
+    self.displayLink.preferredFramesPerSecond = 60;
     
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Music"];
     if (!config.enabled) return;
