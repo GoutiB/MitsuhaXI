@@ -18,10 +18,14 @@
 }
 
 - (void)respring:(id)sender {
-	system("killall backboardd");
+	pid_t pid;
+    const char* args[] = {"killall", "backboardd", NULL};
+    posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
 }
 
 - (void)restartmsd:(id)sender {
-	system("killall mediaserverd");
+	pid_t pid;
+    const char* args[] = {"killall", "mediaserverd", NULL};
+    posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
 }
 @end
