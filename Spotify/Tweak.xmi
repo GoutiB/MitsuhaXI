@@ -2,10 +2,9 @@
 #define CFWBackgroundViewTagNumber 896541
 
 static SPTUniversalController *currentBackgroundMusicVC;
-static BOOL shouldUpdate = true;
 UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
-%group MitsuhaSpotify
+%group MitsuhaVisuals
 
 %hook SPTNowPlayingShowsFormatBackgroundViewController
 
@@ -39,7 +38,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 -(void)viewWillAppear:(BOOL)animated{
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     %orig;
-    shouldUpdate = true;
+    self.mitsuhaJelloView.shouldUpdate = true;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -67,7 +66,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
     [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     } completion:^(BOOL finished){
-        shouldUpdate = false;
+        self.mitsuhaJelloView.shouldUpdate = false;
     }];
 }
 
@@ -131,7 +130,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 -(void)viewWillAppear:(BOOL)animated{
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     %orig;
-    shouldUpdate = true;
+    self.mitsuhaJelloView.shouldUpdate = true;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -160,7 +159,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
     [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     } completion:^(BOOL finished){
-        shouldUpdate = false;
+        self.mitsuhaJelloView.shouldUpdate = false;
     }];
 }
 
@@ -363,7 +362,7 @@ static CGFloat originalCenterY = 0;
 static BOOL registered;
 
 -(void)applicationDidEnterBackground:(UIApplication *)application{
-    shouldUpdate = false;
+    currentBackgroundMusicVC.mitsuhaJelloView.shouldUpdate = false;
     
     if(!registered){
         [[NSNotificationCenter defaultCenter] addObserver: self
@@ -378,7 +377,7 @@ static BOOL registered;
 
 %new
 -(void)enableWave{
-    shouldUpdate = true;
+    currentBackgroundMusicVC.mitsuhaJelloView.shouldUpdate = true;
 }
 
 %end
@@ -387,6 +386,6 @@ static BOOL registered;
 
 %ctor{
     if([MSHJelloViewConfig loadConfigForApplication:@"Spotify"].enabled){
-        %init(MitsuhaSpotify)
+        %init(MitsuhaVisuals)
     }
 }

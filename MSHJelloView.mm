@@ -141,6 +141,8 @@ int connfd = -1;
         [self initializeWaveLayers];
     }
 
+    self.shouldUpdate = true;
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         struct sockaddr_in remote;
         remote.sin_family = AF_INET;
@@ -238,7 +240,9 @@ int connfd = -1;
 }
 
 - (void)redraw{
-    [self requestUpdate];
+    if (self.shouldUpdate) {
+        [self requestUpdate];
+    }
     CGPathRef path = [self createPathWithPoints:self.points
                                      pointCount:self.config.numberOfPoints
                                          inRect:self.bounds];

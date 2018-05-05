@@ -47,6 +47,7 @@
 }
 
 @property (nonatomic, strong) MSHJelloViewConfig *config;
+@property (nonatomic, assign) BOOL shouldUpdate;
 
 @property (nonatomic, strong) CADisplayLink *displayLink;
 @property (nonatomic, assign) CGPoint *points;
