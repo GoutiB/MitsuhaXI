@@ -26,7 +26,7 @@ void server()
     NSLog(@"[MitsuhaXI] Server created...");
     struct sockaddr_in local;
     local.sin_family = AF_INET;
-    local.sin_addr.s_addr = htonl(INADDR_ANY);
+    local.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //INADDR_ANY if you want to expose audio output
     local.sin_port = htons(MSHPort);
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -86,6 +86,8 @@ void server()
                     free(data);
                 }
             }
+
+            free(buffer);
         });
     }
 }

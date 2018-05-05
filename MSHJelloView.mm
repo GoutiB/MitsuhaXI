@@ -36,7 +36,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     
     if (self) {
         _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
-        _enableDisplayLink = [([dict objectForKey:@"enableDisplayLink"] ?: @(YES)) boolValue];
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
@@ -202,10 +201,7 @@ int connfd = -1;
     self.waveLayer.zPosition = 0;
     self.subwaveLayer.zPosition = -1;
     
-    if(self.config.enableDisplayLink){
-        [self configureDisplayLink];
-    }
-    
+    [self configureDisplayLink];
     [self resetWaveLayers];
 }
 
@@ -370,11 +366,6 @@ const int one = 1;
     
     self.points[self.config.numberOfPoints - 1].x = self.bounds.size.width;
     self.points[0].y = self.points[self.config.numberOfPoints - 1].y = self.config.waveOffset; //self.bounds.size.height/2;
-    
-    if(!self.config.enableDisplayLink){
-        //  Do the animation here
-        [self redraw];
-    }
 }
 
 @end
