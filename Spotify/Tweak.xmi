@@ -4,21 +4,6 @@
 static SPTUniversalController *currentBackgroundMusicVC;
 static BOOL shouldUpdate = true;
 UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
-dispatch_queue_t SPQUEUE = dispatch_queue_create("io.c0ldra1n.mitsuhaxi.spotify.queue", nil);
-
-OSStatus (*orig_AudioUnitRender)(AudioUnit inUnit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-
-OSStatus hooked_AudioUnitRender(AudioUnit inUnit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData){
-    OSStatus orig = orig_AudioUnitRender(inUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, ioData);
-    
-    if(shouldUpdate){
-        dispatch_async(SPQUEUE, ^{
-            [(MSHJelloView *)[currentBackgroundMusicVC mitsuhaJelloView] updateBuffer:(float *)ioData->mBuffers[0].mData withLength:(ioData->mBuffers[0].mDataByteSize)/sizeof(float)];
-        });
-    }
-    
-    return orig;
-};
 
 %group MitsuhaSpotify
 
@@ -402,9 +387,6 @@ static BOOL registered;
 
 %ctor{
     if([MSHJelloViewConfig loadConfigForApplication:@"Spotify"].enabled){
-        NSLog(@"[Mitsuha]: Hooking AudioUnitRender...");
-        
-        MSHookFunction(&AudioUnitRender, &hooked_AudioUnitRender, &orig_AudioUnitRender);
         %init(MitsuhaSpotify)
     }
 }

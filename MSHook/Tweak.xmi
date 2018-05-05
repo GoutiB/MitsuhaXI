@@ -17,7 +17,7 @@ OSStatus AudioUnitRender_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActi
             p_bufferlist = NULL;
         }
     }
-    
+
     return AudioUnitRender_orig(unit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, ioData);
 }
 
@@ -81,6 +81,10 @@ void server()
 
                 send(connfd, &len, sizeof(UInt32), 0);
                 send(connfd, data, len, 0);
+
+                if (len == sizeof(float)) {
+                    free(data);
+                }
             }
         });
     }

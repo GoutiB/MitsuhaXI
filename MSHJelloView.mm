@@ -9,8 +9,9 @@
 #import "MSHJelloView.h"
 #import "MSHUtils.h"
 #import <substrate.h>
-#include <Accelerate/Accelerate.h>
-#include <libcolorpicker.h>
+#import <Accelerate/Accelerate.h>
+#import <libcolorpicker.h>
+#import <arpa/inet.h>
 
 static CGPoint midPointForPoints(CGPoint p1, CGPoint p2) {
     return CGPointMake((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -61,7 +62,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
             _subwaveColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
         }
         
-        _gain = [([dict objectForKey:@"gain"] ?: @(100)) doubleValue];
+        _gain = [([dict objectForKey:@"gain"] ?: @(50)) doubleValue];
         _limiter = [([dict objectForKey:@"limiter"] ?: @(0)) doubleValue];
         _numberOfPoints = [([dict objectForKey:@"numberOfPoints"] ?: @(8)) unsignedIntegerValue];
         _waveOffset = [([dict objectForKey:@"waveOffset"] ?: @(0)) doubleValue];
@@ -87,25 +88,22 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
         [prefs setValue:[prefs objectForKey:key] forKey:newKey];
     }
+
+    prefs[@"gain"] = [prefs objectForKey:@"gain"] ?: @(50);
+    prefs[@"subwaveColor"] = prefs[@"waveColor"];
+    prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     
     if ([name isEqualToString:@"Music"]) {
         prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.1");
-        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60));
+    } else {
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
     }
     
     if ([name isEqualToString:@"Spotify"]){
-        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
-        prefs[@"gain"] = [prefs objectForKey:@"gain"] ?: @(200);
         prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10));
-    }
-
-    if ([name isEqualToString:@"Springboard"]){
-        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
+    } else {
         prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60));
     }
-
-    prefs[@"subwaveColor"] = prefs[@"waveColor"];
-    prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
     
@@ -134,13 +132,58 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
 @implementation MSHJelloView
 
+int connfd = -1;
+
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
     if (self) {
         self.config = config;
         [self initializeWaveLayers];
     }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        struct sockaddr_in remote;
+        remote.sin_family = AF_INET;
+        remote.sin_port = htons(MSHPort);
+        inet_aton("127.0.0.1", &remote.sin_addr);
+        int r = -1;
+        UInt32 len = 0;
+        int rlen = 0;
+        float * data = NULL;
+
+        while (true) {
+            connfd = socket(AF_INET, SOCK_STREAM, 0);
+
+            while(r != 0) {
+                r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
+            }
+
+            while(true) {
+                rlen = recv(connfd, &len, sizeof(UInt32), 0);
+
+                if (rlen == 0) {
+                    close(connfd);
+                    break;
+                }
+
+                if (len > 0) {
+                    if (data != NULL) {
+                        free(data);
+                    }
+                    data = (float *)malloc(len);
+                    recv(connfd, data, len, 0);
+                    [self updateBuffer:data withLength:len/sizeof(float)];
+                }
+            }
+        }
+    });
+
     return self;
+}
+
+-(void)dealloc{
+    close(connfd);
+    [super dealloc];
 }
 
 -(void)initializeWaveLayers{
@@ -183,7 +226,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(redraw)];
     
     [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    
     [self.displayLink setPaused:false];
     
     self.waveLayer.shouldAnimate = true;
@@ -196,6 +238,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 }
 
 - (void)redraw{
+    [self requestUpdate];
     CGPathRef path = [self createPathWithPoints:self.points
                                      pointCount:self.config.numberOfPoints
                                          inRect:self.bounds];
@@ -264,6 +307,11 @@ const UInt32 numberOfFrames = 512;
 const int bufferLog2 = round(log2(numberOfFrames));
 const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+const int one = 1;
+
+-(void)requestUpdate{
+    send(connfd, &one, sizeof(int), 0);
+}
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
     if (self.config.enableFFT && length >= numberOfFrames) {

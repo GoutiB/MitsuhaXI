@@ -10,7 +10,5 @@
 #import "../MSHJelloView.h"
 
 @interface SBIconController : UIViewController
-
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
-@property (retain,nonatomic) CADisplayLink *displayLink;
 @end

@@ -10,8 +10,5 @@
 #import "../MSHJelloView.h"
 
 @interface MusicNowPlayingControlsViewController : UIViewController
-
-@property (retain,nonatomic) UILabel * titleLabel;
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
-@property (retain,nonatomic) CADisplayLink *displayLink;
 @end
