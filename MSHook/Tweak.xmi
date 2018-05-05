@@ -1,14 +1,14 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <libkern/OSAtomic.h>
 #import <os/lock.h>
-#include <pthread.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
-
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#import "../MSHUtils.h"
+#import <pthread.h>
+#import <sys/socket.h>
+#import <sys/un.h>
+#import <unistd.h>
+#import <netinet/in.h>
+#import <netdb.h>
+#import <arpa/inet.h>
 
 AudioBufferList *p_bufferlist = NULL;
 
@@ -28,11 +28,10 @@ OSStatus AudioUnitProcess_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioAct
 void server()
 {
     NSLog(@"[MitsuhaXI] Server created...");
-    int port = 43333;
     struct sockaddr_in local;
     local.sin_family = AF_INET;
     local.sin_addr.s_addr = htonl(INADDR_ANY);
-    local.sin_port = htons(port);
+    local.sin_port = htons(MSHPort);
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
     int r = -1;
@@ -55,12 +54,19 @@ void server()
         int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             UInt32 len = sizeof(float);
+            int rlen = 0;
             float *data = NULL;
+            char buffer[4096];
 
             while(true) {
+                rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
+                if (rlen == 0) {
+                    close(connfd);
+                    break;
+                }
                 data = NULL;
 
-                if (p_bufferlist != NULL && (*p_bufferlist).mNumberBuffers > 0 && (*p_bufferlist).mNumberBuffers < 9) {
+                if (p_bufferlist != NULL && (*p_bufferlist).mNumberBuffers > 0 && (*p_bufferlist).mNumberBuffers < 9) { //this is hacky but it gets the job done
                     len = (*p_bufferlist).mBuffers[0].mDataByteSize;
                     if (len > 4000 && len < 70000 && len % sizeof(float) == 0) {
                         data = (float *)(*p_bufferlist).mBuffers[0].mData;
@@ -77,9 +83,7 @@ void server()
                 }
 
                 send(connfd, &len, sizeof(UInt32), 0);
-                send(connfd, data, len, 0); 
-                close(connfd);
-                break;
+                send(connfd, data, len, 0);
             }
         });
     }

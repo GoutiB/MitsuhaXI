@@ -6,13 +6,14 @@
 //
 
 #import "Tweak.h"
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
+#import "../MSHUtils.h"
+#import <sys/socket.h>
+#import <sys/un.h>
+#import <unistd.h>
 
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#import <netinet/in.h>
+#import <netdb.h>
+#import <arpa/inet.h>
 
 UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
     if (!self)
@@ -26,8 +27,6 @@ UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
     
     return self;
 }
-
-
 
 UIColor * averageColor(UIImage *image, double alpha){
     //Work within the RGB colorspoace
@@ -67,8 +66,21 @@ UIColor * averageColor(UIImage *image, double alpha){
 
 %hook MusicNowPlayingControlsViewController
 
+int connfd = -1;
+
 -(void)viewDidLoad{
     %orig;
+
+    struct sockaddr_in remote;
+    remote.sin_family = AF_INET;
+    remote.sin_port = htons(MSHPort);
+    inet_aton("127.0.0.1", &remote.sin_addr);
+    connfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    int r = -1;
+    while(r != 0) {
+        r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
+    }
     
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateFrame:)];
     self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = 20;
@@ -103,28 +115,20 @@ UIColor * averageColor(UIImage *image, double alpha){
     [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
+- (void)dealloc{
+    close(connfd);
+}
+
 %new
 -(void)updateFrame:(CADisplayLink *)dlink{
-    int port = 43333;
-    struct sockaddr_in remote;
-    remote.sin_family = AF_INET;
-    remote.sin_port = htons(port);
-    inet_aton("127.0.0.1", &remote.sin_addr);
-    int connfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    int r = -1;
-    while(r != 0) {
-        r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
-    }
-
     UInt32 len = 0;
+    send(connfd, &len, sizeof(UInt32), 0);
     recv(connfd, &len, sizeof(UInt32), 0);
     if (len > 0) {
         float * data = (float *)malloc(len);
         recv(connfd, data, len, 0);
         [self.mitsuhaJelloView updateBuffer:data withLength:len/sizeof(float) mul:4.0f];
     }
-    close(connfd);
 }
 
 %new
