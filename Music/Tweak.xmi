@@ -124,6 +124,7 @@ UIColor * averageColor(UIImage *image, double alpha){
         recv(connfd, data, len, 0);
         [self.mitsuhaJelloView updateBuffer:data withLength:len/sizeof(float) mul:4.0f];
     }
+    close(connfd);
 }
 
 %new

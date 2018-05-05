@@ -25,7 +25,7 @@ OSStatus AudioUnitProcess_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioAct
     return AudioUnitProcess_orig(unit, ioActionFlags, inTimeStamp, inNumberFrames, ioData);
 }
 
-void *server(void *ptr)
+void server()
 {
     NSLog(@"[MitsuhaXI] Server created...");
     int port = 43333;
@@ -38,7 +38,6 @@ void *server(void *ptr)
     int r = -1;
     while(r != 0) {
         r = bind(listenfd, (struct sockaddr*)&local, sizeof(local));
-        printf("bind: %d\n", r);
         usleep(200 * 1000);
     }
 
@@ -52,29 +51,45 @@ void *server(void *ptr)
     }
     NSLog(@"[MitsuhaXI] listening.");
 
-    int connfd = -1;
     while(true) {
-        if(connfd == -1) {
-            connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-            UInt32 len = 0;
+        int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            UInt32 len = sizeof(float);
+            float *data = NULL;
 
-            if (p_bufferlist != NULL) { //TODO: see if crashes
-                len = (*p_bufferlist).mBuffers[0].mDataByteSize;
+            while(true) {
+                data = NULL;
+
+                if (p_bufferlist != NULL && (*p_bufferlist).mNumberBuffers > 0 && (*p_bufferlist).mNumberBuffers < 9) {
+                    len = (*p_bufferlist).mBuffers[0].mDataByteSize;
+                    if (len > 4000 && len < 70000 && len % sizeof(float) == 0) {
+                        data = (float *)(*p_bufferlist).mBuffers[0].mData;
+                        if (data[0] > 1.5 || data[0] < -1.5) {
+                            data = NULL;
+                        }
+                    }
+                }
+
+                if (data == NULL) {
+                    len = sizeof(float);
+                    data = (float *)malloc(sizeof(float));
+                    data[0] = 0.0f;
+                }
+
                 send(connfd, &len, sizeof(UInt32), 0);
-                send(connfd, (*p_bufferlist).mBuffers[0].mData, (*p_bufferlist).mBuffers[0].mDataByteSize, 0); 
-            } else {
-                send(connfd, &len, sizeof(UInt32), 0);
+                send(connfd, data, len, 0); 
+                close(connfd);
+                break;
             }
-            close(connfd);
-            connfd = -1;
-        }
+        });
     }
 }
 
 __attribute__((constructor))
 static void initialize()
 {
-    pthread_t server_thread;
-    pthread_create(&server_thread, NULL, server, NULL);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        server();
+    });
     MSHookFunction(AudioUnitProcess, AudioUnitProcess_hook, &AudioUnitProcess_orig);
 }
