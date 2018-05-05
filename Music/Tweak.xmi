@@ -6,48 +6,13 @@
 //
 
 #import "Tweak.h"
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
 
-static AudioBufferList *p_bufferlist;
-
-void init(MTAudioProcessingTapRef tap, void *clientInfo, void **tapStorageOut) {
-    NSLog(@"[Mitsuha]: Initialising the Audio Tap Processor");
-    *tapStorageOut = clientInfo;
-}
-
-void finalize(MTAudioProcessingTapRef tap) {
-    NSLog(@"[Mitsuha]: Finalizing the Audio Tap Processor");
-}
-
-void prepare(MTAudioProcessingTapRef tap, CMItemCount maxFrames, const AudioStreamBasicDescription *processingFormat) {
-    NSLog(@"[Mitsuha]: Preparing the Audio Tap Processor");
-}
-
-void unprepare(MTAudioProcessingTapRef tap) {
-    NSLog(@"[Mitsuha]: Unpreparing the Audio Tap Processor");
-}
-
-void logAudioBufferList(AudioBufferList *ABL){
-    NSLog(@"<Mitsuha>: %p\nnb:%d\nnc:%d\nsp:%f", ABL, ABL->mNumberBuffers, (unsigned int)ABL->mBuffers[0].mNumberChannels, ((float *)(ABL->mBuffers[0].mData))[5]);
-}
-
-void process(MTAudioProcessingTapRef tap, CMItemCount numberFrames,
-             MTAudioProcessingTapFlags flags, AudioBufferList *bufferListInOut,
-             CMItemCount *numberFramesOut, MTAudioProcessingTapFlags *flagsOut) {
-    
-    OSStatus err = MTAudioProcessingTapGetSourceAudio(tap, numberFrames, bufferListInOut,
-                                                      flagsOut, NULL, numberFramesOut);
-    
-    if (err) {
-        NSLog(@"[Mitsuha]: Something went wrong while processing audio!");
-    }
-    
-    if(p_bufferlist != bufferListInOut){
-        NSLog(@"[Mitsuha]: Switching Buffer!(%p->%p)", p_bufferlist, bufferListInOut);
-        p_bufferlist = bufferListInOut;
-    }
-}
-
-
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 
 UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
     if (!self)
@@ -98,71 +63,6 @@ UIColor * averageColor(UIImage *image, double alpha){
     }
 }
 
-static AVMutableAudioMix *audioMix;
-
-%group MitsuhaInternals
-
-%hook MPAVController
-
--(void)_tracksDidChange:(id)arg1{
-    %orig;
-    NSLog(@"[Mitsuha-2]: ITEM DID CHANGE");
-    [self configureMitsuhaFilter];
-}
--(void)_itemDidChange:(id)arg1{
-    %orig;
-    NSLog(@"[Mitsuha-2]: ITEM DID CHANGE");
-    [self configureMitsuhaFilter];
-}
-
-%new
--(void)configureMitsuhaFilter{
-    NSLog(@"[Mitsuha]: Configuring Mitsuha Filter...");
-    
-    MPQueuePlayer *queuePlayer = self.avPlayer;
-    
-    NSLog(@"[Mitsuha]:(%@)(%@)", queuePlayer.currentItem, queuePlayer.currentItem.tracks.firstObject.assetTrack);
-    
-    if(!queuePlayer.currentItem.tracks.firstObject.assetTrack){
-        return;
-    }
-    
-    AVMutableAudioMixInputParameters *inputParams = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:queuePlayer.currentItem.tracks.firstObject.assetTrack];
-
-    MTAudioProcessingTapCallbacks callbacks;
-    callbacks.version = kMTAudioProcessingTapCallbacksVersion_0;
-    callbacks.init = init;
-    callbacks.prepare = prepare;
-    callbacks.process = process;
-    callbacks.unprepare = unprepare;
-    callbacks.finalize = finalize;
-    
-    static MTAudioProcessingTapRef tap;
-    
-    if(tap == NULL) {
-        OSStatus err = MTAudioProcessingTapCreate(kCFAllocatorDefault, &callbacks,
-                                                  kMTAudioProcessingTapCreationFlag_PostEffects, &tap);
-        if (err || !tap) {
-            NSLog(@"[Mitsuha]: Unable to create the Audio Processing Tap");
-            return;
-        }
-    }
-    
-    // Assign the tap to the input parameters
-    inputParams.audioTapProcessor = tap;
-    
-    // Create a new AVAudioMix and assign it to our AVPlayerItem
-    audioMix = [AVMutableAudioMix audioMix];
-    audioMix.inputParameters = @[inputParams];
-    queuePlayer.currentItem.audioMix = audioMix;
-
-    NSLog(@"[Mitsuha]: audioMix %@", audioMix);
-}
-
-%end
-
-%end
-
 %group MitsuhaVisuals
 
 %hook MusicNowPlayingControlsViewController
@@ -171,6 +71,7 @@ static AVMutableAudioMix *audioMix;
     %orig;
     
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateFrame:)];
+    self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = 20;
     
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Music"];
     if (!config.enabled) return;
@@ -204,30 +105,24 @@ static AVMutableAudioMix *audioMix;
 
 %new
 -(void)updateFrame:(CADisplayLink *)dlink{
-    if(p_bufferlist != NULL){
-        int numberBuffers = (*p_bufferlist).mNumberBuffers;
-        float *data = NULL;
-        int dataByteSize = sizeof(float);
-        
-        if (numberBuffers > 0 && numberBuffers < 9) {
-            dataByteSize = (*p_bufferlist).mBuffers[0].mDataByteSize;
+    int port = 43333;
+    struct sockaddr_in remote;
+    remote.sin_family = AF_INET;
+    remote.sin_port = htons(port);
+    inet_aton("127.0.0.1", &remote.sin_addr);
+    int connfd = socket(AF_INET, SOCK_STREAM, 0);
 
-            if (dataByteSize > 4000 && dataByteSize < 70000 && dataByteSize % sizeof(float) == 0) {
-                data = (float *)(*p_bufferlist).mBuffers[0].mData;
+    int r = -1;
+    while(r != 0) {
+        r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
+    }
 
-                if (data[0] > 1.5 || data[0] < -1.5) {
-                    dataByteSize = sizeof(float);
-                    data = NULL;
-                }
-            }
-        }
-
-        if (data == NULL) {
-            data = (float *)malloc(sizeof(float));
-            data[0] = 0.0f;
-        }
-
-        [self.mitsuhaJelloView updateBuffer:data withLength:dataByteSize/sizeof(float)];
+    UInt32 len = 0;
+    recv(connfd, &len, sizeof(UInt32), 0);
+    if (len > 0) {
+        float * data = (float *)malloc(len);
+        recv(connfd, data, len, 0);
+        [self.mitsuhaJelloView updateBuffer:data withLength:len/sizeof(float) mul:4.0f];
     }
 }
 
@@ -256,7 +151,5 @@ static AVMutableAudioMix *audioMix;
 %end
 
 %ctor{
-    %init(MitsuhaInternals);
-    //    INIT(MitsuhaVisuals, MusicNowPlayingControlsViewController = NSClassFromString(@"Music.NowPlayingControlsViewController"));
     %init(MitsuhaVisuals);
 }

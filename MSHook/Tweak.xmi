@@ -1,0 +1,80 @@
+#import <AudioToolbox/AudioToolbox.h>
+#import <libkern/OSAtomic.h>
+#import <os/lock.h>
+#include <pthread.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+
+AudioBufferList *p_bufferlist = NULL;
+
+OSStatus(*AudioUnitProcess_orig)(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inNumberFrames, AudioBufferList *ioData);
+OSStatus AudioUnitProcess_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inNumberFrames, AudioBufferList *ioData)
+{
+    AudioComponentDescription unitDescription = {0};
+    AudioComponentGetDescription(AudioComponentInstanceGetComponent(unit), &unitDescription);
+
+    if (unitDescription.componentSubType == 'vrq2') {
+        p_bufferlist = ioData;
+    }
+
+    return AudioUnitProcess_orig(unit, ioActionFlags, inTimeStamp, inNumberFrames, ioData);
+}
+
+void *server(void *ptr)
+{
+    NSLog(@"[MitsuhaXI] Server created...");
+    int port = 43333;
+    struct sockaddr_in local;
+    local.sin_family = AF_INET;
+    local.sin_addr.s_addr = htonl(INADDR_ANY);
+    local.sin_port = htons(port);
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    int r = -1;
+    while(r != 0) {
+        r = bind(listenfd, (struct sockaddr*)&local, sizeof(local));
+        printf("bind: %d\n", r);
+        usleep(200 * 1000);
+    }
+
+    int one = 1;
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
+
+    r = -1;
+    while(r != 0) {
+        r = listen(listenfd, 20);
+        usleep(200 * 1000);
+    }
+    NSLog(@"[MitsuhaXI] listening.");
+
+    int connfd = -1;
+    while(true) {
+        if(connfd == -1) {
+            connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+            UInt32 len = 0;
+
+            if (p_bufferlist != NULL) { //TODO: see if crashes
+                len = (*p_bufferlist).mBuffers[0].mDataByteSize;
+                send(connfd, &len, sizeof(UInt32), 0);
+                send(connfd, (*p_bufferlist).mBuffers[0].mData, (*p_bufferlist).mBuffers[0].mDataByteSize, 0); 
+            } else {
+                send(connfd, &len, sizeof(UInt32), 0);
+            }
+            close(connfd);
+            connfd = -1;
+        }
+    }
+}
+
+__attribute__((constructor))
+static void initialize()
+{
+    pthread_t server_thread;
+    pthread_create(&server_thread, NULL, server, NULL);
+    MSHookFunction(AudioUnitProcess, AudioUnitProcess_hook, &AudioUnitProcess_orig);
+}

@@ -62,7 +62,7 @@
 
 -(CGPathRef)createPathWithPoints:(CGPoint *)points pointCount:(NSUInteger)pointCount inRect:(CGRect)rect;
 
--(void)updateBuffer:(float *)bufferData withLength:(int)length;
+-(void)updateBuffer:(float *)bufferData withLength:(int)length mul:(float)mul;
 
 -(void)setSampleData:(float *)data length:(int)length;
 

@@ -13,7 +13,7 @@ OSStatus hooked_AudioUnitRender(AudioUnit inUnit, AudioUnitRenderActionFlags *io
     
     if(shouldUpdate){
         dispatch_async(SPQUEUE, ^{
-            [(MSHJelloView *)[currentBackgroundMusicVC mitsuhaJelloView] updateBuffer:(float *)ioData->mBuffers[0].mData withLength:(ioData->mBuffers[0].mDataByteSize)/sizeof(float)];
+            [(MSHJelloView *)[currentBackgroundMusicVC mitsuhaJelloView] updateBuffer:(float *)ioData->mBuffers[0].mData withLength:(ioData->mBuffers[0].mDataByteSize)/sizeof(float) mul:1.0f];
         });
     }
     
