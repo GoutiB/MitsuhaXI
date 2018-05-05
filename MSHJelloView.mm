@@ -260,8 +260,7 @@ const int bufferLog2 = round(log2(numberOfFrames));
 const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 
--(void)updateBuffer:(float *)bufferData withLength:(int)length mul:(float)mul{
-    vDSP_vsmul(bufferData, 1, &mul, bufferData, 1, length);
+-(void)updateBuffer:(float *)bufferData withLength:(int)length{
     if (self.config.enableFFT && length >= numberOfFrames) {
         int numberOfFramesOver2 = numberOfFrames / 2;
         float outReal[numberOfFramesOver2];

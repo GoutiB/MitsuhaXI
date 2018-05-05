@@ -114,7 +114,7 @@ int connfd = -1;
     if (len > 0) {
         float * data = (float *)malloc(len);
         recv(connfd, data, len, 0);
-        [self.mitsuhaJelloView updateBuffer:data withLength:len/sizeof(float) mul:4.0f];
+        [self.mitsuhaJelloView updateBuffer:data withLength:len/sizeof(float)];
     }
 }
 

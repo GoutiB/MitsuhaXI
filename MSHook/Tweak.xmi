@@ -4,17 +4,21 @@
 
 AudioBufferList *p_bufferlist = NULL;
 
-OSStatus(*AudioUnitProcess_orig)(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inNumberFrames, AudioBufferList *ioData);
-OSStatus AudioUnitProcess_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inNumberFrames, AudioBufferList *ioData)
+OSStatus (*AudioUnitRender_orig)(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
+OSStatus AudioUnitRender_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
     AudioComponentDescription unitDescription = {0};
     AudioComponentGetDescription(AudioComponentInstanceGetComponent(unit), &unitDescription);
-
-    if (unitDescription.componentSubType == 'vrq2') {
-        p_bufferlist = ioData;
+    
+    if (unitDescription.componentSubType == 'mcmx') {
+        if (inNumberFrames > 0) {
+            p_bufferlist = ioData;
+        } else {
+            p_bufferlist = NULL;
+        }
     }
-
-    return AudioUnitProcess_orig(unit, ioActionFlags, inTimeStamp, inNumberFrames, ioData);
+    
+    return AudioUnitRender_orig(unit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, ioData);
 }
 
 void server()
@@ -34,6 +38,7 @@ void server()
 
     int one = 1;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEPORT, &one, sizeof(one));
 
     r = -1;
     while(r != 0) {
@@ -87,5 +92,5 @@ static void initialize()
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         server();
     });
-    MSHookFunction(AudioUnitProcess, AudioUnitProcess_hook, &AudioUnitProcess_orig);
+    MSHookFunction(AudioUnitRender, AudioUnitRender_hook, &AudioUnitRender_orig);
 }
