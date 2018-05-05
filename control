@@ -1,9 +1,9 @@
 Package: io.ominousness.mitsuhaxi
-Name: MitsuhaXI
+Name: MitsuhaXIß
 Depends: mobilesubstrate
 Version: 0.3.0
 Architecture: iphoneos-arm
-Description: Jell-O wave effect for Apple Music and Spotify (iOS 11 Compatible)
+Description: iOS 11 audio visualizer for Apple Music and Spotify
 Maintainer: Ominousness
-Author: c0ldra1n
+Author: c0ldra1n & Ominousness
 Section: Tweaks
