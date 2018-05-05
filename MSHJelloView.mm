@@ -66,6 +66,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _numberOfPoints = [([dict objectForKey:@"numberOfPoints"] ?: @(8)) unsignedIntegerValue];
         _waveOffset = [([dict objectForKey:@"waveOffset"] ?: @(0)) doubleValue];
         _waveOffset = ([([dict objectForKey:@"negateOffset"] ?: @(false)) boolValue] ? _waveOffset * -1 : _waveOffset);
+        _fps = [([dict objectForKey:@"fps"] ?: @(10)) doubleValue];
     }
     
     return self;
@@ -108,6 +109,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         prefs[@"subwaveColor"] = prefs[@"waveColor"];
         prefs[@"gain"] = [prefs objectForKey:@"gain"] ?: @(200);
         prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
+        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10));
     }
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
