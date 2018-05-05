@@ -26,7 +26,7 @@ void server()
     NSLog(@"[MitsuhaXI] Server created...");
     struct sockaddr_in local;
     local.sin_family = AF_INET;
-    local.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //INADDR_ANY if you want to expose audio output
+    local.sin_addr.s_addr = htonl(INADDR_ANY); //INADDR_ANY if you want to expose audio output
     local.sin_port = htons(MSHPort);
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -53,12 +53,11 @@ void server()
             UInt32 len = sizeof(float);
             int rlen = 0;
             float *data = NULL;
-            char buffer[4096];
+            char buffer[128];
 
             while(true) {
                 rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
-                if (rlen <= 0) {
-                    usleep(200 * 1000);
+                if (rlen == 0) {
                     close(connfd);
                     break;
                 }
@@ -87,8 +86,6 @@ void server()
                     free(data);
                 }
             }
-
-            free(buffer);
         });
     }
 }

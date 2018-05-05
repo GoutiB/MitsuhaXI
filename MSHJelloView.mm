@@ -150,36 +150,36 @@ int connfd = -1;
             UInt32 len = 0;
             int rlen = 0;
             float * data = NULL;
+            connfd = socket(AF_INET, SOCK_STREAM, 0);
 
-            while (true) {
-                connfd = socket(AF_INET, SOCK_STREAM, 0);
+            while(r != 0) {
+                r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
+                usleep(200 * 1000);
+            }
 
-                while(r != 0) {
-                    r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
+            while(true) {
+                rlen = recv(connfd, &len, sizeof(UInt32), 0);
+
+                if (rlen <= 0) {
+                    usleep(1000 * 1000);
+                    close(connfd);
+                    connfd = -1;
+                    break;
                 }
 
-                while(true) {
-                    rlen = recv(connfd, &len, sizeof(UInt32), 0);
+                if (len > 0) {
+                    data = (float *)malloc(len);
+                    rlen = recv(connfd, data, len, 0);
 
-                    if (rlen == 0) {
+                    if (rlen > 0) {
+                        [self updateBuffer:data withLength:rlen/sizeof(float)];
+                        free(data);
+                    } else {
+                        free(data);
+                        usleep(1000 * 1000);
                         close(connfd);
                         connfd = -1;
                         break;
-                    }
-
-                    if (len > 0) {
-                        data = (float *)malloc(len);
-                        rlen = recv(connfd, data, len, 0);
-
-                        if (rlen > 0) {
-                            [self updateBuffer:data withLength:rlen/sizeof(float)];
-                            free(data);
-                        } else {
-                            usleep(1000 * 1000);
-                            close(connfd);
-                            connfd = -1;
-                            break;
-                        }
                     }
                 }
             }
