@@ -57,7 +57,8 @@ void server()
 
             while(true) {
                 rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
-                if (rlen == 0) {
+                if (rlen <= 0) {
+                    usleep(200 * 1000);
                     close(connfd);
                     break;
                 }

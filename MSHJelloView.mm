@@ -138,46 +138,53 @@ int connfd = -1;
     if (self) {
         self.config = config;
         [self initializeWaveLayers];
-    }
 
-    self.shouldUpdate = true;
+        self.shouldUpdate = true;
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        struct sockaddr_in remote;
-        remote.sin_family = AF_INET;
-        remote.sin_port = htons(MSHPort);
-        inet_aton("127.0.0.1", &remote.sin_addr);
-        int r = -1;
-        UInt32 len = 0;
-        int rlen = 0;
-        float * data = NULL;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            struct sockaddr_in remote;
+            remote.sin_family = AF_INET;
+            remote.sin_port = htons(MSHPort);
+            inet_aton("127.0.0.1", &remote.sin_addr);
+            int r = -1;
+            UInt32 len = 0;
+            int rlen = 0;
+            float * data = NULL;
 
-        while (true) {
-            connfd = socket(AF_INET, SOCK_STREAM, 0);
+            while (true) {
+                connfd = socket(AF_INET, SOCK_STREAM, 0);
 
-            while(r != 0) {
-                r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
-            }
-
-            while(true) {
-                rlen = recv(connfd, &len, sizeof(UInt32), 0);
-
-                if (rlen == 0) {
-                    close(connfd);
-                    break;
+                while(r != 0) {
+                    r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
                 }
 
-                if (len > 0) {
-                    if (data != NULL) {
-                        free(data);
+                while(true) {
+                    rlen = recv(connfd, &len, sizeof(UInt32), 0);
+
+                    if (rlen == 0) {
+                        close(connfd);
+                        connfd = -1;
+                        break;
                     }
-                    data = (float *)malloc(len);
-                    recv(connfd, data, len, 0);
-                    [self updateBuffer:data withLength:len/sizeof(float)];
+
+                    if (len > 0) {
+                        data = (float *)malloc(len);
+                        rlen = recv(connfd, data, len, 0);
+
+                        if (rlen > 0) {
+                            [self updateBuffer:data withLength:rlen/sizeof(float)];
+                            free(data);
+                        } else {
+                            usleep(1000 * 1000);
+                            close(connfd);
+                            connfd = -1;
+                            break;
+                        }
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
     return self;
 }
@@ -310,7 +317,9 @@ const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 const int one = 1;
 
 -(void)requestUpdate{
-    send(connfd, &one, sizeof(int), 0);
+    if (connfd != -1) {
+        send(connfd, &one, sizeof(int), 0);
+    }
 }
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
