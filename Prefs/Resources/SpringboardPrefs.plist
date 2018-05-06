@@ -49,11 +49,11 @@
 			<key>libcolorpicker</key>
 			<dict>
 				<key>defaults</key>
-				<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+				<string>io.c0ldra1n.mitsuhaxi-colors</string>
 				<key>key</key>
 				<string>MSHSpringboardWaveColor</string>
 				<key>fallback</key>
-				<string>#fcfcfc:0.2</string>
+				<string>#fcfcfc</string>
 				<key>alpha</key>
 				<true/>
 			</dict>

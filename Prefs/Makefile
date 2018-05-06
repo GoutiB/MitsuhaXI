@@ -2,7 +2,7 @@ include $(THEOS)/makefiles/common.mk
 
 export TARGET = iphone:clang:10.1:10.1
 BUNDLE_NAME = MitsuhaXIPrefs
-$(BUNDLE_NAME)_FILES = MSHPrefsListController.m MSHMusicPrefsListController.m MSHSpotifyPrefsListController.m MSHSpringboardPrefsListController.m
+$(BUNDLE_NAME)_FILES = MSHPrefsListController.m $(wildcard Apps/*.m)
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 $(BUNDLE_NAME)_FRAMEWORKS = UIKit
 $(BUNDLE_NAME)_PRIVATE_FRAMEWORKS = Preferences

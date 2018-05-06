@@ -73,11 +73,18 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 }
 
 +(MSHJelloViewConfig *)loadConfigForApplication:(NSString *)name{
-    NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHPreferencesFile];
-    
-    NSLog(@"[Mitsuha] Preferences: %@", prefs);
-    if(!prefs){
-        prefs = [@{} mutableCopy];
+    NSMutableDictionary *prefs = [@{} mutableCopy];
+
+    NSMutableDictionary *file = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHPreferencesFile];
+    NSLog(@"[Mitsuha] Preferences: %@", file);
+    for (NSString *key in [file allKeys]) {
+        [prefs setValue:[file objectForKey:key] forKey:key];
+    }
+
+    file = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHColorsFile];
+    NSLog(@"[Mitsuha] Colors: %@", file);
+    for (NSString *key in [file allKeys]) {
+        [prefs setValue:[file objectForKey:key] forKey:key];
     }
     
     for (NSString *key in [prefs allKeys]) {
