@@ -6,17 +6,26 @@ This is a fork of c0ldra1n's excellent tweak - [Mitsuha2](https://github.com/c0l
 
 **iOS 11.0-11.1.2 required.**
 
-**Supports: Springboard, Apple Music, Spotify.**
-
 1. Make sure [Electra](https://coolstar.org/electra/) is installed.
-2. Grab the latest build from [Releases](https://github.com/Ominousness/MitsuhaXI/releases).
-3. Using WinSCP, FileZilla or any other SFTP/iOS file manager of choice copy all the files from the downloaded archive to */bootstrap/Library/SBInject*.
+2. Compile with make package. (at least until I create a beta repo)
+3. Install with dpkg -i.
 4. Close the Music/Spotify app (using App Switcher) and open it.
 5. If it doesn't work respring or reboot the device.
 
 ## Compatibility
 
+### Supported apps
+
+* Apple Music
+* Spotify
+* Soundcloud
+* iOS audio player notification (global)
+
+### Tweaks
+
 Should be compatible with EclipseX and similar tweaks. Spotify version is confirmed to work with ColorFlow.
+
+Doesn't work with Artsy for now.
 
 ## Bugs
 

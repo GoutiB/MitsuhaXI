@@ -4,7 +4,7 @@ Depends: mobilesubstrate, org.thebigboss.libcolorpicker
 Conflicts: io.c0ldra1n.mitsuha, io.c0ldra1n.mitsuha-beta
 Version: 0.4.0
 Architecture: iphoneos-arm
-Description: iOS 11 audio visualizer for Apple Music, Spotify and the Springboard
+Description: Universal iOS 11 audio visualizer
 Maintainer: Ominousness
 Author: c0ldra1n & Ominousness
 Section: Tweaks
