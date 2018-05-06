@@ -69,7 +69,13 @@ UIColor * averageColor(UIImage *image, double alpha){
 
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
+    [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    %orig;
+    [self.mitsuhaJelloView msdDisconnect];
 }
 
 %new

@@ -36,6 +36,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     %orig;
     self.mitsuhaJelloView.shouldUpdate = true;
@@ -62,7 +63,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
 -(void)viewWillDisappear:(BOOL)animated{
     %orig;
-    
+    [self.mitsuhaJelloView msdDisconnect];
     [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     } completion:^(BOOL finished){
@@ -128,6 +129,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     %orig;
     self.mitsuhaJelloView.shouldUpdate = true;
@@ -155,6 +157,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
 -(void)viewWillDisappear:(BOOL)animated{
     %orig;
+    [self.mitsuhaJelloView msdDisconnect];
     
     [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);

@@ -21,6 +21,8 @@ OSStatus AudioUnitRender_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActi
     return AudioUnitRender_orig(unit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, ioData);
 }
 
+float *empty = (float *)malloc(sizeof(float));
+
 void server()
 {
     NSLog(@"[MitsuhaXI] Server created...");
@@ -35,6 +37,7 @@ void server()
         r = bind(listenfd, (struct sockaddr*)&local, sizeof(local));
         usleep(200 * 1000);
     }
+    NSLog(@"[MitsuhaXI] Bound");
 
     int one = 1;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
@@ -45,7 +48,7 @@ void server()
         r = listen(listenfd, 20);
         usleep(200 * 1000);
     }
-    NSLog(@"[MitsuhaXI] listening.");
+    NSLog(@"[MitsuhaXI] Listening");
 
     while(true) {
         int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
@@ -56,9 +59,12 @@ void server()
             char buffer[128];
 
             while(true) {
+                if (connfd == -1) break;
                 rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
-                if (rlen == 0) {
-                    close(connfd);
+                if (rlen <= 0) {
+                    if (rlen == 0) {
+                        close(connfd);
+                    }
                     break;
                 }
                 data = NULL;
@@ -75,15 +81,19 @@ void server()
 
                 if (data == NULL) {
                     len = sizeof(float);
-                    data = (float *)malloc(sizeof(float));
-                    data[0] = 0.0f;
+                    data = empty;
                 }
 
-                send(connfd, &len, sizeof(UInt32), 0);
-                send(connfd, data, len, 0);
-
-                if (len == sizeof(float)) {
-                    free(data);
+                rlen = send(connfd, &len, sizeof(UInt32), 0);
+                if (rlen > 0) {
+                    rlen = send(connfd, data, len, 0);
+                }
+                
+                if (rlen <= 0) {
+                    if (rlen == 0) {
+                        close(connfd);
+                    }
+                    break;
                 }
             }
         });
@@ -93,6 +103,7 @@ void server()
 __attribute__((constructor))
 static void initialize()
 {
+    empty[0] = 0.0f;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         server();
     });

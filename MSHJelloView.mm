@@ -132,66 +132,100 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 @implementation MSHJelloView
 
 int connfd = -1;
+float *empty = (float *)malloc(sizeof(float));
 
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
+
     if (self) {
         self.config = config;
         [self initializeWaveLayers];
 
-        self.shouldUpdate = true;
+        empty[0] = 0.0f;
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            struct sockaddr_in remote;
-            remote.sin_family = AF_INET;
-            remote.sin_port = htons(MSHPort);
-            inet_aton("127.0.0.1", &remote.sin_addr);
-            int r = -1;
-            UInt32 len = 0;
-            int rlen = 0;
-            float * data = NULL;
+        self.shouldUpdate = true;
+        self.points = (CGPoint *)malloc(sizeof(CGPoint) * self.config.numberOfPoints);
+        cachedLength = self.config.numberOfPoints;
+
+        [self updateBuffer:empty withLength:1];
+    }
+
+    return self;
+}
+
+-(void)msdDisconnect{
+    NSLog(@"[MitsuhaXI] Disconnect");
+    close(connfd);
+    connfd = -2;
+}
+
+-(void)msdConnect{
+    connfd = -1;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"[MitsuhaXI] connfd = %d", connfd);
+        struct sockaddr_in remote;
+        remote.sin_family = AF_INET;
+        remote.sin_port = htons(MSHPort);
+        inet_aton("127.0.0.1", &remote.sin_addr);
+        int r = -1;
+        int rlen = 0;
+        float *data = NULL;
+        UInt32 len = sizeof(float);
+
+        while (connfd != -2) {
+            NSLog(@"[MitsuhaXI] Connecting to mediaserverd.");
             connfd = socket(AF_INET, SOCK_STREAM, 0);
+
+            if (connfd == -1) {
+                usleep(1000 * 1000);
+                continue;
+            }
 
             while(r != 0) {
                 r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
                 usleep(200 * 1000);
             }
 
+            NSLog(@"[MitsuhaXI] Connected.");
+
             while(true) {
+                if (connfd < 0) break;
+
                 rlen = recv(connfd, &len, sizeof(UInt32), 0);
 
+                if (connfd < 0) break;
+
                 if (rlen <= 0) {
-                    usleep(1000 * 1000);
-                    close(connfd);
+                    if (rlen == 0) close(connfd);
                     connfd = -1;
-                    break;
+                    len = sizeof(float);
+                    data = empty;
                 }
 
-                if (len > 0) {
+                if (len > sizeof(float)) {
+                    free(data);
                     data = (float *)malloc(len);
                     rlen = recv(connfd, data, len, 0);
 
+                    if (connfd < 0) break;
+
                     if (rlen > 0) {
                         [self updateBuffer:data withLength:rlen/sizeof(float)];
-                        free(data);
                     } else {
-                        free(data);
-                        usleep(1000 * 1000);
-                        close(connfd);
+                        if (rlen == 0) close(connfd);
                         connfd = -1;
-                        break;
+                        len = sizeof(float);
+                        data = empty;
                     }
                 }
             }
-        });
-    }
 
-    return self;
-}
-
--(void)dealloc{
-    close(connfd);
-    [super dealloc];
+            if (connfd == -2) break;
+            usleep(1000 * 1000);
+        }
+        
+        NSLog(@"[MitsuhaXI] Forcefully disconnected.");
+    });
 }
 
 -(void)initializeWaveLayers{
@@ -316,9 +350,17 @@ const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 const int one = 1;
 
+int slen = 0;
+
 -(void)requestUpdate{
-    if (connfd != -1) {
-        send(connfd, &one, sizeof(int), 0);
+    if (connfd > 0) {
+        slen = send(connfd, &one, sizeof(int), 0);
+        if (slen <= 0) {
+            if (slen == 0) {
+                close(connfd);
+            }
+            connfd = -1;
+        }
     }
 }
 
@@ -348,6 +390,7 @@ const int one = 1;
     float pixelFixer = self.bounds.size.width/self.config.numberOfPoints;
     
     if(cachedLength != self.config.numberOfPoints){
+        free(self.points);
         self.points = (CGPoint *)malloc(sizeof(CGPoint) * self.config.numberOfPoints);
         cachedLength = self.config.numberOfPoints;
     }

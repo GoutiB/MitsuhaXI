@@ -56,6 +56,9 @@
 
 -(void)updateWaveColor:(UIColor *)waveColor subwaveColor:(UIColor *)subwaveColor;
 
+-(void)msdConnect;
+-(void)msdDisconnect;
+
 -(void)initializeWaveLayers;
 -(void)resetWaveLayers;
 -(void)redraw;
