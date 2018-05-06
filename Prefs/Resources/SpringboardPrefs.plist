@@ -57,6 +57,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>label</key>
+			<string>Enable automatic controls color change</string>
+			<key>key</key>
+			<string>MSHSpringboardEnableAutoUIColor</string>
+			<key>alternateColors</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>cellClass</key>
 			<string>PFSimpleLiteColorCell</string>

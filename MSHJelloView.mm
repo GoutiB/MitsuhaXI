@@ -38,6 +38,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _enableDynamicColor = [([dict objectForKey:@"enableDynamicColor"] ?: @(NO)) boolValue];
+        _enableAutoUIColor = [([dict objectForKey:@"enableAutoUIColor"] ?: @(YES)) boolValue];
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];

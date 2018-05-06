@@ -75,10 +75,12 @@
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
         UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, 0.6);
         [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
-        if (isDark(dynamicColor)) {
-            [mcpvc.parentContainerView.mediaControlsContainerView setStyle:202024];
-        } else {
-            [mcpvc.parentContainerView.mediaControlsContainerView setStyle:3];
+        if (self.mitsuhaJelloView.config.enableAutoUIColor) {
+            if (isDark(dynamicColor)) {
+                [mcpvc.parentContainerView.mediaControlsContainerView setStyle:202024];
+            } else {
+                [mcpvc.parentContainerView.mediaControlsContainerView setStyle:3];
+            }
         }
     }
 
@@ -94,7 +96,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    if (isDark(self.mitsuhaJelloView.config.waveColor)) {
+    if (self.mitsuhaJelloView.config.enableAutoUIColor && isDark(self.mitsuhaJelloView.config.waveColor)) {
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
         MediaControlsContainerView *controlsView = mcpvc.parentContainerView.mediaControlsContainerView;
         [controlsView setStyle:202024];
