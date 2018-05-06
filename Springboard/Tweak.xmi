@@ -1,5 +1,7 @@
 #import "Tweak.h"
+#import "../Utils/MSHColorUtils.mm"
 
+/*
 %group MitsuhaVisuals
 
 %hook SBIconController
@@ -44,29 +46,33 @@
 
 %end
 
+%end*/
+
+
 %group MitsuhaVisualsNotification
 
 %hook SBDashBoardMediaControlsViewController
 
 -(void)loadView{
     %orig;
-        MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
-        if (!config.enabled) return;
-        
-        CGFloat height = CGRectGetHeight(self.view.bounds);
-        self.view.clipsToBounds = 1;
-        
-        self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
-        self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = config.fps;
-        
-        [self.view addSubview:self.mitsuhaJelloView];
-        [self.view sendSubviewToBack:self.mitsuhaJelloView];
+    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
+    if (!config.enabled) return;
+
+    CGFloat height = CGRectGetHeight(self.view.bounds);
+    self.view.clipsToBounds = 1;
+    
+    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
+    self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = config.fps;
+
+    [self.view addSubview:self.mitsuhaJelloView];
+    [self.view sendSubviewToBack:self.mitsuhaJelloView];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
-    if (self.mitsuhaJelloView == NULL) {
-    }
+    //MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+    //average color: UIColor *test = averageColor(mcpvc.headerView.artworkView.image, 0.6);
+
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, 500 + self.mitsuhaJelloView.config.waveOffset);
 }

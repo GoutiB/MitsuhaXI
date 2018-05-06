@@ -13,6 +13,17 @@
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 @end
 
-@interface SBDashBoardMediaControlsViewController : UIViewController
+@interface MediaControlsHeaderView : UIView
+@property (retain,nonatomic) UIImageView *artworkView;
+@end
+
+@interface MediaControlsPanelViewController : UIViewController
+@property (retain,nonatomic) MediaControlsHeaderView *headerView;
+@end
+
+@interface SBDashBoardMediaControlsViewController : UIViewController {
+    MediaControlsPanelViewController *_mediaControlsPanelViewController;
+}
+- (NSString *)hexStringFromColor:(UIColor *)color;
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 @end
