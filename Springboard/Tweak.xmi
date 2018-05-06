@@ -79,6 +79,14 @@
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, 500 + self.mitsuhaJelloView.config.waveOffset);
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    if (isDark(self.mitsuhaJelloView.config.waveColor)) {
+        MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+        MediaControlsContainerView *controlsView = mcpvc.parentContainerView.mediaControlsContainerView;
+        [controlsView setStyle:202024];
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
