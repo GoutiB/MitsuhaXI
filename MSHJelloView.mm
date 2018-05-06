@@ -133,6 +133,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
 int connfd = -1;
 float *empty = (float *)malloc(sizeof(float));
+const int one = 1;
 
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
@@ -164,7 +165,7 @@ float *empty = (float *)malloc(sizeof(float));
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSLog(@"[MitsuhaXI] connfd = %d", connfd);
         struct sockaddr_in remote;
-        remote.sin_family = AF_INET;
+        remote.sin_family = PF_INET;
         remote.sin_port = htons(MSHPort);
         inet_aton("127.0.0.1", &remote.sin_addr);
         int r = -1;
@@ -174,12 +175,13 @@ float *empty = (float *)malloc(sizeof(float));
 
         while (connfd != -2) {
             NSLog(@"[MitsuhaXI] Connecting to mediaserverd.");
-            connfd = socket(AF_INET, SOCK_STREAM, 0);
+            connfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
             if (connfd == -1) {
                 usleep(1000 * 1000);
                 continue;
             }
+            setsockopt(connfd, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof(one));
 
             while(r != 0) {
                 r = connect(connfd, (struct sockaddr *)&remote, sizeof(remote));
@@ -348,7 +350,6 @@ const UInt32 numberOfFrames = 512;
 const int bufferLog2 = round(log2(numberOfFrames));
 const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
-const int one = 1;
 
 int slen = 0;
 

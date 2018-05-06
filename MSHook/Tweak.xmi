@@ -29,7 +29,7 @@ void server()
     local.sin_family = AF_INET;
     local.sin_addr.s_addr = htonl(INADDR_ANY); //INADDR_ANY if you want to expose audio output
     local.sin_port = htons(MSHPort);
-    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    int listenfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     int r = -1;
     while(r != 0) {
@@ -41,6 +41,7 @@ void server()
     int one = 1;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEPORT, &one, sizeof(one));
+    setsockopt(listenfd, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof(one));
 
     r = -1;
     while(r != 0) {
@@ -51,51 +52,54 @@ void server()
 
     while(true) {
         int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UInt32 len = sizeof(float);
-            int rlen = 0;
-            float *data = NULL;
-            char buffer[128];
+        if (connfd > 0) {
+            setsockopt(connfd, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof(one));
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                UInt32 len = sizeof(float);
+                int rlen = 0;
+                float *data = NULL;
+                char buffer[128];
 
-            while(true) {
-                if (connfd == -1) break;
-                rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
-                if (rlen <= 0) {
-                    if (rlen == 0) {
-                        close(connfd);
+                while(true) {
+                    if (connfd == -1) break;
+                    rlen = recv(connfd, buffer, sizeof(buffer), 0); //accept anything from the client and send data back
+                    if (rlen <= 0) {
+                        if (rlen == 0) {
+                            close(connfd);
+                        }
+                        break;
                     }
-                    break;
-                }
-                data = NULL;
+                    data = NULL;
 
-                if (p_bufferlist != NULL && (*p_bufferlist).mNumberBuffers > 0 && (*p_bufferlist).mNumberBuffers < 9) { //this is hacky but it gets the job done
-                    len = (*p_bufferlist).mBuffers[0].mDataByteSize;
-                    if (len > 4000 && len < 70000 && len % sizeof(float) == 0) {
-                        data = (float *)(*p_bufferlist).mBuffers[0].mData;
-                        if (data[0] > 1.5 || data[0] < -1.5) {
-                            data = NULL;
+                    if (p_bufferlist != NULL && (*p_bufferlist).mNumberBuffers > 0 && (*p_bufferlist).mNumberBuffers < 9) { //this is hacky but it gets the job done
+                        len = (*p_bufferlist).mBuffers[0].mDataByteSize;
+                        if (len > 4000 && len < 70000 && len % sizeof(float) == 0) {
+                            data = (float *)(*p_bufferlist).mBuffers[0].mData;
+                            if (data[0] > 1.5 || data[0] < -1.5) {
+                                data = NULL;
+                            }
                         }
                     }
-                }
 
-                if (data == NULL) {
-                    len = sizeof(float);
-                    data = empty;
-                }
-
-                rlen = send(connfd, &len, sizeof(UInt32), 0);
-                if (rlen > 0) {
-                    rlen = send(connfd, data, len, 0);
-                }
-                
-                if (rlen <= 0) {
-                    if (rlen == 0) {
-                        close(connfd);
+                    if (data == NULL) {
+                        len = sizeof(float);
+                        data = empty;
                     }
-                    break;
+
+                    rlen = send(connfd, &len, sizeof(UInt32), 0);
+                    if (rlen > 0) {
+                        rlen = send(connfd, data, len, 0);
+                    }
+                    
+                    if (rlen <= 0) {
+                        if (rlen == 0) {
+                            close(connfd);
+                        }
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
 
