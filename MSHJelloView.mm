@@ -69,6 +69,13 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _numberOfPoints = [([dict objectForKey:@"numberOfPoints"] ?: @(8)) unsignedIntegerValue];
         _waveOffset = [([dict objectForKey:@"waveOffset"] ?: @(0)) doubleValue];
         _waveOffset = ([([dict objectForKey:@"negateOffset"] ?: @(false)) boolValue] ? _waveOffset * -1 : _waveOffset);
+        if ([_application isEqualToString:@"Music"]) {
+            _waveOffset += 70;
+        } else if ([_application isEqualToString:@"Spotify"]) {
+            _waveOffset += 250;
+        } else if ([_application isEqualToString:@"Springboard"]) {
+            _waveOffset += 500;
+        }
         _fps = [([dict objectForKey:@"fps"] ?: @(10)) doubleValue];
     }
     
@@ -142,14 +149,25 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
 @implementation MSHJelloView
 
-int connfd = -1;
-float *empty = (float *)malloc(sizeof(float));
 const int one = 1;
+
+const UInt32 numberOfFrames = 512;
+const int numberOfFramesOver2 = numberOfFrames / 2;
+const int bufferLog2 = round(log2(numberOfFrames));
+const float fftNormFactor = 1.0/32.0;
+const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+
+float outReal[numberOfFramesOver2];
+float outImaginary[numberOfFramesOver2];
+COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
+float out[numberOfFramesOver2];
 
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
 
     if (self) {
+        connfd = -1;
+        empty = (float *)malloc(sizeof(float));
         self.config = config;
         [self initializeWaveLayers];
 
@@ -371,22 +389,9 @@ const int one = 1;
     return CGPathCreateCopy(convertedPath);
 }
 
-const UInt32 numberOfFrames = 512;
-const int numberOfFramesOver2 = numberOfFrames / 2;
-const int bufferLog2 = round(log2(numberOfFrames));
-const float fftNormFactor = 1.0/32.0;
-const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
-
-float outReal[numberOfFramesOver2];
-float outImaginary[numberOfFramesOver2];
-COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
-float out[numberOfFramesOver2];
-
-int slen = 0;
-
 -(void)requestUpdate{
     if (connfd > 0) {
-        slen = send(connfd, &one, sizeof(int), 0);
+        int slen = send(connfd, &one, sizeof(int), 0);
         if (slen <= 0) {
             if (slen == 0) {
                 close(connfd);

@@ -46,6 +46,8 @@
 
 @interface MSHJelloView : UIView{
     NSUInteger cachedLength;
+    int connfd;
+    float *empty;
 }
 
 @property (nonatomic, strong) MSHJelloViewConfig *config;

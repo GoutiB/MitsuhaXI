@@ -9,7 +9,6 @@
     
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Music"];
     
-    config.waveOffset += 70;
     CGFloat height = CGRectGetHeight(self.view.bounds);
     self.view.clipsToBounds = 1;
     

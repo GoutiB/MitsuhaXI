@@ -94,7 +94,7 @@
     self.view.superview.layer.masksToBounds = TRUE;
     [self.mitsuhaJelloView reloadConfig];
     [self.mitsuhaJelloView msdConnect];
-    self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, 500 + self.mitsuhaJelloView.config.waveOffset);
+    self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
 }
 
 -(void)viewDidAppear:(BOOL)animated{
