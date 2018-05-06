@@ -3,6 +3,7 @@
 #import "../MSHUtils.h"
 
 AudioBufferList *p_bufferlist = NULL;
+float *empty = NULL;
 
 OSStatus (*AudioUnitRender_orig)(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
 OSStatus AudioUnitRender_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
@@ -20,8 +21,6 @@ OSStatus AudioUnitRender_hook(AudioUnit unit, AudioUnitRenderActionFlags *ioActi
 
     return AudioUnitRender_orig(unit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, ioData);
 }
-
-float *empty = (float *)malloc(sizeof(float));
 
 void server()
 {
@@ -103,6 +102,7 @@ void server()
 __attribute__((constructor))
 static void initialize()
 {
+    empty = (float *)malloc(sizeof(float));
     empty[0] = 0.0f;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         server();
