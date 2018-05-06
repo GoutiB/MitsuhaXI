@@ -25,6 +25,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Soundcloud</string>
+			<key>detail</key>
+			<string>MSHSoundcloudPrefsListController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Springboard (Notification)</string>
 			<key>detail</key>
 			<string>MSHSpringboardPrefsListController</string>
