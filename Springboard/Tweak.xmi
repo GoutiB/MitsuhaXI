@@ -73,6 +73,8 @@
     //MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
     //average color: UIColor *test = averageColor(mcpvc.headerView.artworkView.image, 0.6);
 
+    self.view.superview.layer.cornerRadius = 13;
+    self.view.superview.layer.masksToBounds = TRUE;
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, 500 + self.mitsuhaJelloView.config.waveOffset);
 }
