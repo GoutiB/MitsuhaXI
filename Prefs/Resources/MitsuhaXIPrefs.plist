@@ -84,6 +84,32 @@
 			<key>isSegmented</key>
 			<false/>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Frames per second</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>label</key>
+			<string>Frames per second</string>
+			<key>default</key>
+			<real>60</real>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>key</key>
+			<string>MSHMusicFps</string>
+			<key>min</key>
+			<real>5</real>
+			<key>max</key>
+			<real>240</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<false/>
+		</dict>
 		<!-- Spotify -->
 		<dict>
 			<key>cell</key>
@@ -279,6 +305,32 @@
 			<real>-150</real>
 			<key>max</key>
 			<real>150</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Frames per second</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>label</key>
+			<string>Frames per second</string>
+			<key>default</key>
+			<real>60</real>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>key</key>
+			<string>MSHSpringboardFps</string>
+			<key>min</key>
+			<real>5</real>
+			<key>max</key>
+			<real>240</real>
 			<key>showValue</key>
 			<true/>
 			<key>isSegmented</key>
