@@ -12,3 +12,7 @@
 @interface SBIconController : UIViewController
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 @end
+
+@interface SBDashBoardMediaControlsViewController : UIViewController
+@property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
+@end
