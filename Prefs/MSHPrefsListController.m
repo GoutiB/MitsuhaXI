@@ -1,10 +1,9 @@
-#import "Preferences.h"
-#import "../MSHUtils.h"
+#import "MSHPrefsListController.h"
 
 @implementation MSHPrefsListController
 - (id)specifiers {
     if(_specifiers == nil) {
-        _specifiers = [[self loadSpecifiersFromPlistName:@"MitsuhaXIPrefs" target:self] retain];
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Prefs" target:self] retain];
     }
     return _specifiers;
 }
