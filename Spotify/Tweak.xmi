@@ -36,6 +36,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [self.mitsuhaJelloView reloadConfig];
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
     %orig;

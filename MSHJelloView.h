@@ -11,6 +11,7 @@
 @interface MSHJelloViewConfig : NSObject
 
 @property BOOL enabled;
+@property (nonatomic, assign) NSString* application;
 
 @property BOOL enableDynamicGain;
 @property BOOL enableDynamicColor;
@@ -58,6 +59,7 @@
 
 -(void)updateWaveColor:(UIColor *)waveColor subwaveColor:(UIColor *)subwaveColor;
 
+-(void)reloadConfig;
 -(void)msdConnect;
 -(void)msdDisconnect;
 

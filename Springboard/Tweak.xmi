@@ -70,6 +70,7 @@
 
 -(BOOL)handleEvent:(id)event{
     NSLog(@"[MitsuhaXI] Handle event");
+    BOOL stuff = %orig;
 
     if (self.mitsuhaJelloView.config.enableDynamicColor) {
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
@@ -84,13 +85,14 @@
         }
     }
 
-    return %orig;
+    return stuff;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
     self.view.superview.layer.cornerRadius = 13;
     self.view.superview.layer.masksToBounds = TRUE;
+    [self.mitsuhaJelloView reloadConfig];
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, 500 + self.mitsuhaJelloView.config.waveOffset);
 }

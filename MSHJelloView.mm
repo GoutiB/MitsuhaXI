@@ -35,6 +35,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     self = [super init];
     
     if (self) {
+        _application = [dict objectForKey:@"application"];
         _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _enableDynamicColor = [([dict objectForKey:@"enableDynamicColor"] ?: @(NO)) boolValue];
@@ -76,6 +77,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
 +(MSHJelloViewConfig *)loadConfigForApplication:(NSString *)name{
     NSMutableDictionary *prefs = [@{} mutableCopy];
+    [prefs setValue:name forKey:@"application"];
 
     NSMutableDictionary *file = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHPreferencesFile];
     NSLog(@"[Mitsuha] Preferences: %@", file);
@@ -161,6 +163,11 @@ const int one = 1;
     }
 
     return self;
+}
+
+-(void)reloadConfig{
+    self.config = [MSHJelloViewConfig loadConfigForApplication:self.config.application];
+    [self updateWaveColor:self.config.waveColor subwaveColor:self.config.subwaveColor];
 }
 
 -(void)msdDisconnect{
