@@ -68,11 +68,25 @@
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
 }
 
+-(BOOL)handleEvent:(id)event{
+    NSLog(@"[MitsuhaXI] Handle event");
+
+    if (self.mitsuhaJelloView.config.enableDynamicColor) {
+        MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+        UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, 0.6);
+        [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+        if (isDark(dynamicColor)) {
+            [mcpvc.parentContainerView.mediaControlsContainerView setStyle:202024];
+        } else {
+            [mcpvc.parentContainerView.mediaControlsContainerView setStyle:3];
+        }
+    }
+
+    return %orig;
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
-    //MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-    //average color: UIColor *test = averageColor(mcpvc.headerView.artworkView.image, 0.6);
-
     self.view.superview.layer.cornerRadius = 13;
     self.view.superview.layer.masksToBounds = TRUE;
     [self.mitsuhaJelloView msdConnect];

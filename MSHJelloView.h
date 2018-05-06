@@ -13,6 +13,7 @@
 @property BOOL enabled;
 
 @property BOOL enableDynamicGain;
+@property BOOL enableDynamicColor;
 @property BOOL enableFFT;
 @property double gain;
 @property double limiter;

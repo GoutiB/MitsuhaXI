@@ -62,4 +62,6 @@
     MediaControlsPanelViewController *_mediaControlsPanelViewController;
 }
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
+
+-(BOOL)handleEvent:(id)event;
 @end
