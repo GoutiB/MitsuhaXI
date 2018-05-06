@@ -356,9 +356,15 @@ const int one = 1;
 }
 
 const UInt32 numberOfFrames = 512;
+const int numberOfFramesOver2 = numberOfFrames / 2;
 const int bufferLog2 = round(log2(numberOfFrames));
 const float fftNormFactor = 1.0/32.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+
+float outReal[numberOfFramesOver2];
+float outImaginary[numberOfFramesOver2];
+COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
+float out[numberOfFramesOver2];
 
 int slen = 0;
 
@@ -376,19 +382,13 @@ int slen = 0;
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
     if (self.config.enableFFT && length >= numberOfFrames) {
-        int numberOfFramesOver2 = numberOfFrames / 2;
-        float outReal[numberOfFramesOver2];
-        float outImaginary[numberOfFramesOver2];
-        
-        COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
         vDSP_ctoz((COMPLEX *)bufferData, 2, &output, 1, numberOfFramesOver2);
         vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
         vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
         vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
-        float out[numberOfFramesOver2];
         vDSP_zvabs(&output, 1, out, 1, numberOfFramesOver2);
 
-        [self setSampleData:out length:numberOfFramesOver2];
+        [self setSampleData:out length:numberOfFramesOver2/2];
     } else {
         [self setSampleData:bufferData length:length];
     }
