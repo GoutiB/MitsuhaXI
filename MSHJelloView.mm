@@ -172,9 +172,11 @@ const int one = 1;
         int rlen = 0;
         float *data = NULL;
         UInt32 len = sizeof(float);
+        int retries = 0;
 
         while (connfd != -2) {
             NSLog(@"[MitsuhaXI] Connecting to mediaserverd.");
+            retries++;
             connfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
             if (connfd == -1) {
@@ -189,6 +191,12 @@ const int one = 1;
             }
 
             NSLog(@"[MitsuhaXI] Connected.");
+
+            if (retries > 10) {
+                connfd = -2;
+                NSLog(@"[MitsuhaXI] Too many retries. Aborting.");
+                break;
+            }
 
             while(true) {
                 if (connfd < 0) break;
@@ -212,6 +220,7 @@ const int one = 1;
                     if (connfd < 0) break;
 
                     if (rlen > 0) {
+                        retries = 0;
                         [self updateBuffer:data withLength:rlen/sizeof(float)];
                     } else {
                         if (rlen == 0) close(connfd);
