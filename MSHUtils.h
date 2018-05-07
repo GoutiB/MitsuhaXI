@@ -18,4 +18,4 @@
 #define MSHPreferencesFile @"/var/mobile/Library/Preferences/io.c0ldra1n.mitsuhaxi-prefs.plist"
 #define MSHColorsFile @"/var/mobile/Library/Preferences/io.c0ldra1n.mitsuhaxi-colors.plist"
 #define MSHDatastreamPath @"/Library/Application\ Support/Mitsuha/io.c0ldra1n.mitsuhaxi.datastream"
-#define MSHPort 43333
+#define ASSPort 43333

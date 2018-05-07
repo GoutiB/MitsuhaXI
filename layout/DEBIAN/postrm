@@ -2,5 +2,4 @@
 
 killall -9 Music
 killall -9 Spotify
-killall -9 mediaserverd
 exit 0

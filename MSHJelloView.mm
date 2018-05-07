@@ -202,7 +202,7 @@ float out[numberOfFramesOver2];
         NSLog(@"[MitsuhaXI] connfd = %d", connfd);
         struct sockaddr_in remote;
         remote.sin_family = PF_INET;
-        remote.sin_port = htons(MSHPort);
+        remote.sin_port = htons(ASSPort);
         inet_aton("127.0.0.1", &remote.sin_addr);
         int r = -1;
         int rlen = 0;
