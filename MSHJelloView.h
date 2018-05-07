@@ -24,7 +24,7 @@
 @property (nonatomic, retain) UIColor *subwaveColor;
 
 @property NSUInteger numberOfPoints;
-@property NSUInteger fps;
+@property CGFloat fps;
 
 @property CGFloat waveOffset;
 

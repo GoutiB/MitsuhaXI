@@ -78,7 +78,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         } else if ([_application isEqualToString:@"Soundcloud"]) {
             _waveOffset += 500;
         }
-        _fps = [([dict objectForKey:@"fps"] ?: @(10)) doubleValue];
+        _fps = [([dict objectForKey:@"fps"] ?: @(60.0)) doubleValue];
     }
     
     return self;
@@ -119,9 +119,9 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     }
     
     if ([name isEqualToString:@"Spotify"]){
-        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10));
+        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10.0));
     } else {
-        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60));
+        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60.0));
     }
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
@@ -188,6 +188,7 @@ float out[numberOfFramesOver2];
 -(void)reloadConfig{
     self.config = [MSHJelloViewConfig loadConfigForApplication:self.config.application];
     [self updateWaveColor:self.config.waveColor subwaveColor:self.config.subwaveColor];
+    self.displayLink.preferredFramesPerSecond = self.config.fps;
 }
 
 -(void)msdDisconnect{
@@ -313,6 +314,8 @@ float out[numberOfFramesOver2];
     
     [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.displayLink setPaused:false];
+
+    self.displayLink.preferredFramesPerSecond = self.config.fps;
     
     self.waveLayer.shouldAnimate = true;
     self.subwaveLayer.shouldAnimate = true;

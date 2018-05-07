@@ -13,8 +13,6 @@
     self.view.clipsToBounds = 1;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
-    self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = config.fps;
-    
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
 }
