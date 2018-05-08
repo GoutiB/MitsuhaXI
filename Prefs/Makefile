@@ -1,7 +1,8 @@
+ARCHS = arm64
+TARGET = iphone:clang:11.2:11.2
+
 include $(THEOS)/makefiles/common.mk
 
-export ARCHS = arm64
-export TARGET = iphone:clang:10.1:10.1
 BUNDLE_NAME = MitsuhaXIPrefs
 $(BUNDLE_NAME)_FILES = MSHPrefsListController.m $(wildcard Apps/*.m)
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
