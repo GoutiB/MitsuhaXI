@@ -43,6 +43,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
+        _enableFFTSpectrumSmoothing = [([dict objectForKey:@"enableFFTSpectrumSmoothing"] ?: @(NO)) boolValue];
         
         if([dict objectForKey:@"waveColor"]){
             if([[dict objectForKey:@"waveColor"] isKindOfClass:[UIColor class]]){
@@ -163,6 +164,7 @@ float outReal[numberOfFramesOver2];
 float outImaginary[numberOfFramesOver2];
 COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
 float out[numberOfFramesOver2];
+float spectrumMul[numberOfFramesOver2];
 
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
@@ -170,6 +172,11 @@ float out[numberOfFramesOver2];
     if (self) {
         connfd = -1;
         empty = (float *)malloc(sizeof(float));
+
+        for (int i = 0; i < numberOfFramesOver2; i++) {
+            spectrumMul[i] = pow(i/5, 0.85)/5;
+        }
+
         self.config = config;
         [self initializeWaveLayers];
 
@@ -413,6 +420,10 @@ float out[numberOfFramesOver2];
         vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
         vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
         vDSP_zvabs(&output, 1, out, 1, numberOfFramesOver2);
+
+        if (self.config.enableFFTSpectrumSmoothing) {
+            vDSP_vmul(out, 1, spectrumMul, 1, out, 1, numberOfFramesOver2);
+        }
 
         [self setSampleData:out length:numberOfFramesOver2/2];
     } else {
