@@ -1,5 +1,6 @@
 include $(THEOS)/makefiles/common.mk
 
+export ARCHS = arm64
 export TARGET = iphone:clang:10.1:10.1
 BUNDLE_NAME = MitsuhaXIPrefs
 $(BUNDLE_NAME)_FILES = MSHPrefsListController.m $(wildcard Apps/*.m)
