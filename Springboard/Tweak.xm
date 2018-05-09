@@ -94,6 +94,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
+    %orig;
     if (self.mitsuhaJelloView.config.enableAutoUIColor && isDark(self.mitsuhaJelloView.config.waveColor)) {
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
         MediaControlsContainerView *controlsView = mcpvc.parentContainerView.mediaControlsContainerView;
