@@ -11,7 +11,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioUnit/AudioUnit.h>
 
-#import <substrate.h>
 #import "../MSHUtils.h"
 #import "../MSHJelloView.h"
 

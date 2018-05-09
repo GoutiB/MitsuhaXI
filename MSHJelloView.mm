@@ -8,7 +8,6 @@
 
 #import "MSHJelloView.h"
 #import "MSHUtils.h"
-#import <substrate.h>
 #import <Accelerate/Accelerate.h>
 #import <libcolorpicker.h>
 #import <arpa/inet.h>
