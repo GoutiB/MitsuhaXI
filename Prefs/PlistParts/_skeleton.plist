@@ -4,12 +4,12 @@
 <dict>
 	<key>items</key>
 	<array>
-		<!-- Springboard -->
+		<!-- %APP_NAME% -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Springboard</string>
+			<string>%APP_NAME%</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
@@ -23,7 +23,7 @@
 			<key>label</key>
 			<string>Enabled</string>
 			<key>key</key>
-			<string>MSHSpringboardEnabled</string>
+			<string>MSH%APP_ID%Enabled</string>
 			<key>alternateColors</key>
 			<true/>
 		</dict>
@@ -37,38 +37,11 @@
 			<key>label</key>
 			<string>Enable FFT</string>
 			<key>key</key>
-			<string>MSHSpringboardEnableFFT</string>
+			<string>MSH%APP_ID%EnableFFT</string>
 			<key>alternateColors</key>
 			<true/>
 		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
-			<key>label</key>
-			<string>Enable dynamic color (experimental)</string>
-			<key>key</key>
-			<string>MSHSpringboardEnableDynamicColor</string>
-			<key>alternateColors</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
-			<key>label</key>
-			<string>Enable automatic controls color change</string>
-			<key>key</key>
-			<string>MSHSpringboardEnableAutoUIColor</string>
-			<key>alternateColors</key>
-			<true/>
-		</dict>
+        %EXTRA%
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
@@ -79,9 +52,9 @@
 				<key>defaults</key>
 				<string>io.c0ldra1n.mitsuhaxi-colors</string>
 				<key>key</key>
-				<string>MSHSpringboardWaveColor</string>
+				<string>MSH%APP_ID%WaveColor</string>
 				<key>fallback</key>
-				<string>#fcfcfc</string>
+				<string>%APP_COLOR%</string>
 				<key>alpha</key>
 				<true/>
 			</dict>
@@ -102,7 +75,7 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>key</key>
-			<string>MSHSpringboardWaveOffset</string>
+			<string>MSH%APP_ID%WaveOffset</string>
 			<key>min</key>
 			<real>-150</real>
 			<key>max</key>
@@ -124,11 +97,11 @@
 			<key>label</key>
 			<string>Frames per second</string>
 			<key>default</key>
-			<real>60</real>
+			<real>%APP_FPS%</real>
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>key</key>
-			<string>MSHSpringboardFps</string>
+			<string>MSH%APP_ID%Fps</string>
 			<key>min</key>
 			<real>5</real>
 			<key>max</key>
@@ -148,24 +121,16 @@
 			<true/>
 		</dict>
 		<dict>
-			<key>action</key>
-			<string>respring:</string>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>label</key>
-			<string>Respring</string>
-		</dict>
-		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Mitsuha, Mitsuha2 by c0ldra1n,
+			<string>Mitsuha, Mitsuha2 by c0ldra1n,$
 ported to iOS 11 by Ominousness.</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Springboard - MitsuhaXI</string>
+	<string>%APP_NAME% - MitsuhaXI</string>
 </dict>
 </plist>
