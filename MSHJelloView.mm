@@ -42,7 +42,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
-        _enableFFTSpectrumSmoothing = [([dict objectForKey:@"enableFFTSpectrumSmoothing"] ?: @(NO)) boolValue];
         
         if([dict objectForKey:@"waveColor"]){
             if([[dict objectForKey:@"waveColor"] isKindOfClass:[UIColor class]]){
@@ -156,7 +155,7 @@ const int one = 1;
 const UInt32 numberOfFrames = MSHAudioBufferSize;
 const int numberOfFramesOver2 = numberOfFrames / 2;
 const int bufferLog2 = round(log2(numberOfFrames));
-const float fftNormFactor = -1.0/96.0;
+const float fftNormFactor = -1.0/256.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
 float* window = (float *)malloc(sizeof(float)*MSHAudioBufferSize);
 
@@ -164,7 +163,6 @@ float outReal[numberOfFramesOver2];
 float outImaginary[numberOfFramesOver2];
 COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
 float out[numberOfFramesOver2];
-float spectrumMul[numberOfFramesOver2];
 
 -(instancetype)initWithFrame:(CGRect)frame andConfig:(MSHJelloViewConfig *)config{
     self = [super initWithFrame:frame];
@@ -173,10 +171,6 @@ float spectrumMul[numberOfFramesOver2];
         connfd = -1;
         empty = (float *)malloc(sizeof(float));
         vDSP_hann_window(window, MSHAudioBufferSize, vDSP_HANN_NORM);
-
-        for (int i = 0; i < numberOfFramesOver2; i++) {
-            spectrumMul[i] = fftNormFactor * pow(i/5, 0.85)/5;
-        }
 
         self.config = config;
         [self initializeWaveLayers];
@@ -420,13 +414,7 @@ float spectrumMul[numberOfFramesOver2];
         vDSP_ctoz((COMPLEX *)bufferData, 2, &output, 1, numberOfFramesOver2);
         vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
         vDSP_zvabs(&output, 1, out, 1, numberOfFramesOver2);
-
-        if (self.config.enableFFTSpectrumSmoothing) {
-            vDSP_vmul(out, 1, spectrumMul, 1, out, 1, numberOfFramesOver2);
-        } else {
-            vDSP_vsmul(out, 1, &fftNormFactor, out, 1, numberOfFramesOver2);
-        }
-
+        vDSP_vsmul(out, 1, &fftNormFactor, out, 1, numberOfFramesOver2);
 
         [self setSampleData:out length:numberOfFramesOver2/16];
     } else {

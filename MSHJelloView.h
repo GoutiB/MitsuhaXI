@@ -17,7 +17,6 @@
 @property BOOL enableDynamicColor;
 @property BOOL enableAutoUIColor;
 @property BOOL enableFFT;
-@property BOOL enableFFTSpectrumSmoothing;
 @property double gain;
 @property double limiter;
 
