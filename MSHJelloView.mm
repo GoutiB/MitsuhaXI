@@ -154,11 +154,12 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
 
 const int one = 1;
 
-const UInt32 numberOfFrames = 512;
+const UInt32 numberOfFrames = MSHAudioBufferSize;
 const int numberOfFramesOver2 = numberOfFrames / 2;
 const int bufferLog2 = round(log2(numberOfFrames));
-const float fftNormFactor = 1.0/32.0;
+const float fftNormFactor = -1.0/96.0;
 const FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+float* window = (float *)malloc(sizeof(float)*MSHAudioBufferSize);
 
 float outReal[numberOfFramesOver2];
 float outImaginary[numberOfFramesOver2];
@@ -172,9 +173,10 @@ float spectrumMul[numberOfFramesOver2];
     if (self) {
         connfd = -1;
         empty = (float *)malloc(sizeof(float));
+        vDSP_hann_window(window, MSHAudioBufferSize, vDSP_HANN_NORM);
 
         for (int i = 0; i < numberOfFramesOver2; i++) {
-            spectrumMul[i] = pow(i/5, 0.85)/5;
+            spectrumMul[i] = fftNormFactor * pow(i/5, 0.85)/5;
         }
 
         self.config = config;
@@ -414,18 +416,20 @@ float spectrumMul[numberOfFramesOver2];
 }
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
-    if (self.config.enableFFT && length >= numberOfFrames) {
+    if (self.config.enableFFT && length == MSHAudioBufferSize) {
+        vDSP_vmul(bufferData, 1, window, 1, bufferData, 1, MSHAudioBufferSize);
         vDSP_ctoz((COMPLEX *)bufferData, 2, &output, 1, numberOfFramesOver2);
         vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
-        vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
-        vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
         vDSP_zvabs(&output, 1, out, 1, numberOfFramesOver2);
 
         if (self.config.enableFFTSpectrumSmoothing) {
             vDSP_vmul(out, 1, spectrumMul, 1, out, 1, numberOfFramesOver2);
+        } else {
+            vDSP_vsmul(out, 1, &fftNormFactor, out, 1, numberOfFramesOver2);
         }
 
-        [self setSampleData:out length:numberOfFramesOver2/2];
+
+        [self setSampleData:out length:numberOfFramesOver2/16];
     } else {
         [self setSampleData:bufferData length:length];
     }
@@ -458,7 +462,7 @@ float spectrumMul[numberOfFramesOver2];
             pureValue = (fabs(pureValue) < self.config.limiter ? pureValue : (pureValue < 0 ? -1*self.config.limiter : self.config.limiter));
         }
         
-        self.points[i].y = (-1 * pureValue) + self.config.waveOffset;// + self.bounds.size.height/2;
+        self.points[i].y = pureValue + self.config.waveOffset;// + self.bounds.size.height/2;
     }
     
 #endif
