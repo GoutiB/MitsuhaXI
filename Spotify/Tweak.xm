@@ -277,57 +277,6 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
 %end
 
-%hook SPTNowPlayingCarouselAreaViewController
-
-static CGFloat originalCenterY = 0;
-
--(void)viewWillAppear:(BOOL)animated{
-    %orig;
-    
-    NSLog(@"[Mitsuha]: originalCenterY: %lf", originalCenterY);
-    
-    CGPoint center = self.view.coverArtView.center;
-    
-    self.view.coverArtView.alpha = 0;
-    self.view.coverArtView.center = CGPointMake(center.x, originalCenterY);
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    %orig;
-    
-    NSLog(@"[Mitsuha]: viewDidAppear");
-    
-    CGPoint center = self.view.coverArtView.center;
-    
-    if(originalCenterY == 0){
-        originalCenterY = center.y;
-    }
-    
-    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.view.coverArtView.alpha = 1.0;
-        self.view.coverArtView.center = CGPointMake(center.x, originalCenterY * 0.8);
-    } completion:^(BOOL finished){
-        if(self.view.coverArtView.center.y != originalCenterY * 0.8){    //  For some reason I can't explain
-            [UIView animateWithDuration:0.25 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                self.view.coverArtView.center = CGPointMake(center.x, originalCenterY * 0.8);
-            } completion:nil];
-        }
-    }];
-}
-
--(void)viewWillDisappear:(BOOL)animated{
-    %orig;
-    
-    CGPoint center = self.view.coverArtView.center;
-    
-    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.view.coverArtView.alpha = 0;
-        self.view.coverArtView.center = CGPointMake(center.x, originalCenterY);
-    } completion:nil];
-}
-
-%end
-
 %hook SPTNowPlayingModel
 
 -(void)player:(id)arg1 stateDidChange:(id)arg2 fromState:(id)arg3{
