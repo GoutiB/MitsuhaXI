@@ -62,25 +62,42 @@
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
-}
-
--(BOOL)handleEvent:(id)event{
-    BOOL stuff = %orig;
 
     if (self.mitsuhaJelloView.config.enableDynamicColor) {
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-        UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, 0.6);
-        [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
-        if (self.mitsuhaJelloView.config.enableAutoUIColor) {
-            if (isDark(dynamicColor)) {
-                [mcpvc.parentContainerView.mediaControlsContainerView setStyle:202024];
-            } else {
-                [mcpvc.parentContainerView.mediaControlsContainerView setStyle:3];
-            }
-        }
+        [mcpvc.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
     }
 
-    return stuff;
+    
+}
+
+%new;
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+  if ([keyPath isEqualToString:@"image"]) {
+    NSLog(@"[MitsuhaXI] imageReady");
+    [self readjustWaveColor];
+  }
+}
+
+%new;
+-(void)readjustWaveColor{
+    MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+    UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, 0.6);
+    [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    if (self.mitsuhaJelloView.config.enableAutoUIColor) {
+        [self readjustUIColor:dynamicColor];
+    }
+}
+
+%new;
+-(void)readjustUIColor:(UIColor*)currentColor{
+    MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+    MediaControlsContainerView *controlsView = mcpvc.parentContainerView.mediaControlsContainerView;
+    if (isDark(currentColor)) {
+        [controlsView setStyle:202024];
+    } else {
+        [controlsView setStyle:3];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -88,17 +105,13 @@
     self.view.superview.layer.cornerRadius = 13;
     self.view.superview.layer.masksToBounds = TRUE;
     [self.mitsuhaJelloView reloadConfig];
+    if (self.mitsuhaJelloView.config.enableDynamicColor) {
+        [self readjustWaveColor];
+    } else if (self.mitsuhaJelloView.config.enableAutoUIColor) {
+        [self readjustUIColor:self.mitsuhaJelloView.config.waveColor];
+    }
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    %orig;
-    if (self.mitsuhaJelloView.config.enableAutoUIColor && isDark(self.mitsuhaJelloView.config.waveColor)) {
-        MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-        MediaControlsContainerView *controlsView = mcpvc.parentContainerView.mediaControlsContainerView;
-        [controlsView setStyle:202024];
-    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

@@ -57,7 +57,9 @@
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 
 -(BOOL)handleEvent:(id)event;
-
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+-(void)readjustWaveColor;
+-(void)readjustUIColor:(UIColor*)currentColor;
 -(void)setStyle:(NSInteger)style;
 @end
 
@@ -66,5 +68,8 @@
 }
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+-(void)readjustWaveColor;
+-(void)readjustUIColor:(UIColor*)currentColor;
 -(BOOL)handleEvent:(id)event;
 @end
