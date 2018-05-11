@@ -42,6 +42,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableCoverArtBugFix = [([dict objectForKey:@"enableCoverArtBugFix"] ?: @(NO)) boolValue];
+        _enableArtsySupport = [([dict objectForKey:@"enableArtsySupport"] ?: @(NO)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
         
         if([dict objectForKey:@"waveColor"]){

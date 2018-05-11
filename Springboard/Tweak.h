@@ -54,6 +54,9 @@
 @interface MediaControlsPanelViewController : UIViewController
 @property (retain,nonatomic) MediaControlsHeaderView *headerView;
 @property (retain,nonatomic) MediaControlsParentContainerView *parentContainerView;
+@property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
+
+-(BOOL)handleEvent:(id)event;
 
 -(void)setStyle:(NSInteger)style;
 @end
