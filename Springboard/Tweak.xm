@@ -82,7 +82,7 @@
 %new;
 -(void)readjustWaveColor{
     MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-    UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, 0.6);
+    UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, self.mitsuhaJelloView.config.dynamicColorAlpha);
     [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
     if (self.mitsuhaJelloView.config.enableAutoUIColor) {
         [self readjustUIColor:dynamicColor];
@@ -114,7 +114,7 @@
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewDidDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
 }

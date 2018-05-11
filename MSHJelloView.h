@@ -29,6 +29,7 @@
 @property CGFloat fps;
 
 @property CGFloat waveOffset;
+@property CGFloat dynamicColorAlpha;
 
 @property BOOL ignoreColorFlow;
 

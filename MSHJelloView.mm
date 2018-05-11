@@ -70,6 +70,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _numberOfPoints = [([dict objectForKey:@"numberOfPoints"] ?: @(8)) unsignedIntegerValue];
         _waveOffset = [([dict objectForKey:@"waveOffset"] ?: @(0)) doubleValue];
         _waveOffset = ([([dict objectForKey:@"negateOffset"] ?: @(false)) boolValue] ? _waveOffset * -1 : _waveOffset);
+        _dynamicColorAlpha = [([dict objectForKey:@"dynamicColorAlpha"] ?: @(0.6)) doubleValue];
         if ([_application isEqualToString:@"Music"]) {
             _waveOffset += 70;
         } else if ([_application isEqualToString:@"Spotify"]) {
