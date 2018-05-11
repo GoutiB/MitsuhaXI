@@ -67,8 +67,6 @@
         MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
         [mcpvc.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
     }
-
-    
 }
 
 %new;
@@ -146,19 +144,39 @@
     self.view.clipsToBounds = 1;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
-    self.mitsuhaJelloView.displayLink.preferredFramesPerSecond = config.fps;
-
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
+
+    if (self.mitsuhaJelloView.config.enableDynamicColor) {
+        [self.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
+    }
+}
+
+%new;
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+  if ([keyPath isEqualToString:@"image"]) {
+    NSLog(@"[MitsuhaXI] imageReady");
+    [self readjustWaveColor];
+  }
+}
+
+%new;
+-(void)readjustWaveColor{
+    UIColor *dynamicColor = averageColor(self.headerView.artworkView.image, self.mitsuhaJelloView.config.dynamicColorAlpha);
+    [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
+    [self.mitsuhaJelloView reloadConfig];
+    if (self.mitsuhaJelloView.config.enableDynamicColor) {
+        [self readjustWaveColor];
+    }
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewDidDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
 }
