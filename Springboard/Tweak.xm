@@ -112,7 +112,7 @@
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+-(void)viewWillDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
 }
@@ -176,7 +176,7 @@
     }
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+-(void)viewWillDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
 }
