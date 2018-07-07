@@ -7,10 +7,8 @@ This is a fork of c0ldra1n's excellent tweak - [Mitsuha2](https://github.com/c0l
 **iOS 11.0-11.1.2 required.**
 
 1. Make sure [Electra](https://coolstar.org/electra/) is installed.
-2. Compile with make package. (at least until I create a beta repo)
-3. Install with dpkg -i.
-4. Close the Music/Spotify app (using App Switcher) and open it.
-5. If it doesn't work respring or reboot the device.
+2. Add this repository to Cydia: http://ominous.cf/repo/
+3. Install MitsuhaXI.
 
 ## Compatibility
 
