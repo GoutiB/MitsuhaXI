@@ -85,7 +85,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
             _waveOffset += 480;
         }
 
-        _fps = [([dict objectForKey:@"fps"] ?: @(60.0)) doubleValue];
+        _fps = [([dict objectForKey:@"fps"] ?: @(24)) doubleValue];
     }
     
     return self;
@@ -123,12 +123,6 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.1");
     } else {
         prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
-    }
-    
-    if ([name isEqualToString:@"Spotify"]){
-        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(10.0));
-    } else {
-        prefs[@"fps"] = ([prefs objectForKey:@"fps"] ?: @(60.0));
     }
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
