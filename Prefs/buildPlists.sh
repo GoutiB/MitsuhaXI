@@ -1,6 +1,6 @@
-Apps=(Music Soundcloud Spotify Springboard)
-Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc")
-FPS=("60" "60" "10" "10")
+Apps=(Music Soundcloud Spotify Springboard Deezer)
+Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc")
+FPS=("60" "60" "24" "24" "24")
 
 for idx in ${!Apps[*]}
 do

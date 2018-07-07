@@ -33,6 +33,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Deezer</string>
+			<key>detail</key>
+			<string>MSHDeezerPrefsListController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Springboard (Notification)</string>
 			<key>detail</key>
 			<string>MSHSpringboardPrefsListController</string>
