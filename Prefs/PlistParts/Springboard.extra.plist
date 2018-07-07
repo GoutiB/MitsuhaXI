@@ -6,44 +6,6 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
-			<string>Enable dynamic color (experimental)</string>
-			<key>key</key>
-			<string>MSHSpringboardEnableDynamicColor</string>
-			<key>alternateColors</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Dynamic color alpha</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>label</key>
-			<string>Dynamic color alpha</string>
-			<key>defaults</key>
-			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
-			<key>key</key>
-			<string>MSHSpringboardDynamicColorAlpha</string>
-			<key>min</key>
-			<real>0</real>
-			<key>max</key>
-			<real>1</real>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
-			<key>label</key>
 			<string>Dynamic UI color (experimental)</string>
 			<key>key</key>
 			<string>MSHSpringboardEnableAutoUIColor</string>

@@ -46,11 +46,23 @@
 
 @end
 
+/*@interface SPTNowPlayingCoverArtCotnentViewDelegate : UIView
+
+@property(retain, nonatomic) UIImage *cellContentRepresentation;
+
+@end*/
 
 @interface SPTNowPlayingCoverArtViewCell : UIView
 
 @property(nonatomic) CGSize cellSize; // @synthesize cellSize=_cellSize;
 @property(retain, nonatomic) UIView *contentView; // @synthesize contentView=_contentView;
+@property(nonatomic) BOOL selected;
+@property(nonatomic) BOOL shouldShowCoverArtView;
+@property(retain, nonatomic) UIImage *cellContentRepresentation;
+
+-(void)setSelected:(BOOL)selected;
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+-(void)readjustWaveColor;
 
 @end
 

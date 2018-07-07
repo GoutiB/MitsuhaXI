@@ -1,4 +1,5 @@
 #import "Tweak.h"
+#import "../Utils/MSHColorUtils.mm"
 #define CFWBackgroundViewTagNumber 896541
 #define MSHColorFlowInstalled [%c(CFWPrefsManager) class]
 #define MSHColorFlowMusicEnabled MSHookIvar<BOOL>([%c(CFWPrefsManager) sharedInstance], "_musicEnabled")
@@ -9,6 +10,25 @@ static SPTUniversalController *currentBackgroundMusicVC;
 UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
 %group MitsuhaVisuals
+
+MSHJelloView *mshJelloView = NULL;
+
+%hook SPTNowPlayingCoverArtViewCell
+-(void)setSelected:(BOOL)selected {
+    %orig;
+    if (selected && self.shouldShowCoverArtView && (mshJelloView != NULL && mshJelloView.config.enableDynamicColor)) {
+        NSLog(@"[MitsuhaXI] readjust color (setSelected)");
+        [self readjustWaveColor];
+    }
+}
+
+%new;
+-(void)readjustWaveColor{
+    if (mshJelloView == NULL) return;
+    UIColor *dynamicColor = averageColor(self.cellContentRepresentation, mshJelloView.config.dynamicColorAlpha);
+    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+}
+%end
 
 %hook SPTNowPlayingShowsFormatBackgroundViewController
 -(void)viewDidLoad{
@@ -23,6 +43,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
     CGFloat height = CGRectGetHeight(self.view.bounds) - config.waveOffset;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, config.waveOffset, self.view.bounds.size.width, height) andConfig:config];
+    mshJelloView = self.mitsuhaJelloView;
     [self.view addSubview:self.mitsuhaJelloView];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -115,6 +136,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
     CGFloat height = CGRectGetHeight(self.view.bounds) - config.waveOffset;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, config.waveOffset, self.view.bounds.size.width, height) andConfig:config];
+    mshJelloView = self.mitsuhaJelloView;
     [self.view addSubview:self.mitsuhaJelloView];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -239,7 +261,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
         }
     }
     
-    if([self.tintView.layer.sublayers count] == 0){
+    /*if([self.tintView.layer.sublayers count] == 0){
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = self.tintView.bounds;
         gradient.colors = @[(id)[UIColor colorWithWhite:0 alpha:1].CGColor, (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor colorWithWhite:0 alpha:0.25].CGColor];
@@ -248,7 +270,7 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
             [self.tintView.layer addSublayer:gradient];
             [self.tintView setBackgroundColor:kTrans];
         });
-    }
+    }*/
 }
 
 %new
