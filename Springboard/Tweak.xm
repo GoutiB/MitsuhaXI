@@ -1,4 +1,5 @@
 #import "Tweak.h"
+#import "../MSHUtils.h"
 #import "../Utils/MSHColorUtils.mm"
 
 /*
@@ -199,7 +200,19 @@
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
     if(config.enabled){
         //%init(MitsuhaVisuals); disable homescreen for now
-        if (config.enableArtsySupport) {
+
+        //Check if Artsy is enabled.
+        NSMutableDictionary *artsyPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:ArtsyPreferencesFile];
+        bool artsyEnabled = false;
+        bool artsyLsEnabled = false;
+        if (artsyPrefs) {
+            NSLog(@"[MitsuhaXI] Artsy found");
+            artsyEnabled = [([artsyPrefs objectForKey:@"enabled"] ?: @(YES)) boolValue];
+            artsyLsEnabled = [([artsyPrefs objectForKey:@"lsEnabled"] ?: @(YES)) boolValue];
+        }
+
+        if (artsyLsEnabled) {
+            NSLog(@"[MitsuhaXI] Artsy lsEnabled = true");
             %init(MitsuhaVisualsNotificationArtsy);
         } else {
             %init(MitsuhaVisualsNotification);
