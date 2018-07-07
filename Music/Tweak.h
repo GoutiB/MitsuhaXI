@@ -9,6 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "../MSHJelloView.h"
 
+@interface MusicArtworkComponentImageView : UIImageView
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+-(void)readjustWaveColor;
+@end
+
 @interface MusicNowPlayingControlsViewController : UIViewController
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
 @end
