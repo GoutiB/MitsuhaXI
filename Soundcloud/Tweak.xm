@@ -3,6 +3,33 @@
 
 %group MitsuhaVisuals
 
+%hook PlayerArtworkView
+
+-(void)layoutSubviews{
+    %orig;
+
+    MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
+    if (mshJelloView.config.enableDynamicColor) {
+        [self readjustWaveColor];
+        [self addObserver:self forKeyPath:@"artworkImage" options:NSKeyValueObservingOptionNew context:NULL];
+    }
+}
+
+%new;
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"artworkImage"]) {
+        [self readjustWaveColor];
+    }
+}
+
+%new;
+-(void)readjustWaveColor{
+    MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
+    UIColor *dynamicColor = averageColor(self.artworkImage, mshJelloView.config.dynamicColorAlpha);
+    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+}
+%end
+
 %hook TrackPlayerViewController
 
 -(void)loadView{

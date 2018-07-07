@@ -9,6 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "../MSHJelloView.h"
 
+@interface PlayerArtworkView : UIView {
+}
+@property (retain, nonatomic) UIImage *artworkImage;
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+-(void)readjustWaveColor;
+
+@end
+
+@interface UIViewWithDelegate : UIView {
+}
+
+@property (retain,nonatomic) UIViewController *viewDelegate;
+
+@end
+
 @interface TrackPlayerViewController : UIViewController {
 }
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
