@@ -86,6 +86,8 @@
 			<string>PSSliderCell</string>
 			<key>label</key>
 			<string>Dynamic color alpha</string>
+			<key>default</key>
+			<real>0.6</real>
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>key</key>
@@ -144,6 +146,32 @@
 			<real>5</real>
 			<key>max</key>
 			<real>240</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Sensitivity</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>label</key>
+			<string>Sensitivity</string>
+			<key>default</key>
+			<real>1</real>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>key</key>
+			<string>MSH%APP_ID%Sensitivity</string>
+			<key>min</key>
+			<real>0.25</real>
+			<key>max</key>
+			<real>4</real>
 			<key>showValue</key>
 			<true/>
 			<key>isSegmented</key>

@@ -68,9 +68,11 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _gain = [([dict objectForKey:@"gain"] ?: @(50)) doubleValue];
         _limiter = [([dict objectForKey:@"limiter"] ?: @(0)) doubleValue];
         _numberOfPoints = [([dict objectForKey:@"numberOfPoints"] ?: @(8)) unsignedIntegerValue];
+        _sensitivity = [([dict objectForKey:@"sensitivity"] ?: @(1)) doubleValue];
+        _dynamicColorAlpha = [([dict objectForKey:@"dynamicColorAlpha"] ?: @(0.6)) doubleValue];
+
         _waveOffset = [([dict objectForKey:@"waveOffset"] ?: @(0)) doubleValue];
         _waveOffset = ([([dict objectForKey:@"negateOffset"] ?: @(false)) boolValue] ? _waveOffset * -1 : _waveOffset);
-        _dynamicColorAlpha = [([dict objectForKey:@"dynamicColorAlpha"] ?: @(0.6)) doubleValue];
         if ([_application isEqualToString:@"Music"]) {
             _waveOffset += 70;
         } else if ([_application isEqualToString:@"Spotify"]) {
@@ -80,6 +82,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         } else if ([_application isEqualToString:@"Soundcloud"]) {
             _waveOffset += 500;
         }
+
         _fps = [([dict objectForKey:@"fps"] ?: @(60.0)) doubleValue];
     }
     
@@ -454,7 +457,7 @@ float out[numberOfFramesOver2];
             pureValue = (fabs(pureValue) < self.config.limiter ? pureValue : (pureValue < 0 ? -1*self.config.limiter : self.config.limiter));
         }
         
-        self.points[i].y = pureValue + self.config.waveOffset;// + self.bounds.size.height/2;
+        self.points[i].y = (pureValue * self.config.sensitivity) + self.config.waveOffset;// + self.bounds.size.height/2;
     }
     
 #endif
