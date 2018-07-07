@@ -327,8 +327,10 @@ float out[numberOfFramesOver2];
 }
 
 -(void)updateWaveColor:(UIColor *)waveColor subwaveColor:(UIColor *)subwaveColor{
-    self.waveLayer.fillColor = waveColor.CGColor;
-    self.subwaveLayer.fillColor = subwaveColor.CGColor;
+    [UIView animateWithDuration:10.0 animations:^{
+        self.waveLayer.fillColor = waveColor.CGColor;
+        self.subwaveLayer.fillColor = subwaveColor.CGColor;
+    }];
 }
 
 - (void)redraw{
