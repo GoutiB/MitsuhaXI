@@ -199,14 +199,20 @@
     if(config.enabled){
         //%init(MitsuhaVisuals); disable homescreen for now
 
-        //Check if Artsy is enabled.
-        NSMutableDictionary *artsyPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:ArtsyPreferencesFile];
+        //Check if Artsy is installed
         bool artsyEnabled = false;
         bool artsyLsEnabled = false;
-        if (artsyPrefs) {
+        bool artsyPresent = [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/lib/TweakInject/Artsy.dylib"] && [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/lib/TweakInject/Artsy.plist"];
+
+        if (artsyPresent) {
             NSLog(@"[MitsuhaXI] Artsy found");
-            artsyEnabled = [([artsyPrefs objectForKey:@"enabled"] ?: @(YES)) boolValue];
-            artsyLsEnabled = [([artsyPrefs objectForKey:@"lsEnabled"] ?: @(YES)) boolValue];
+            
+            //Check if Artsy is enabled
+            NSMutableDictionary *artsyPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:ArtsyPreferencesFile];
+            if (artsyPrefs) {
+                artsyEnabled = [([artsyPrefs objectForKey:@"enabled"] ?: @(YES)) boolValue];
+                artsyLsEnabled = [([artsyPrefs objectForKey:@"lsEnabled"] ?: @(YES)) boolValue];
+            }
         }
 
         if (artsyLsEnabled) {
