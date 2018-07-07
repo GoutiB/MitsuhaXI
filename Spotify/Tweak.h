@@ -26,6 +26,12 @@
 
 @end
 
+@interface SPTGeniusNowPlayingViewCoverArtView : UIImageView
+
+-(void)readjustWaveColor;
+
+@end
+
 @interface SPTCarouselBlurBackgroundView : UIView
 
 @property(retain, nonatomic) SPTImageBlurView *backgroundImageBlurView; // @synthesize backgroundImageBlurView=_backgroundImageBlurView;
@@ -61,7 +67,6 @@
 @property(retain, nonatomic) UIImage *cellContentRepresentation;
 
 -(void)setSelected:(BOOL)selected;
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 -(void)readjustWaveColor;
 
 @end

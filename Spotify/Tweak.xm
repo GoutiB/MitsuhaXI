@@ -13,6 +13,21 @@ UIColor *const kTrans = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 
 MSHJelloView *mshJelloView = NULL;
 
+%hook SPTGeniusNowPlayingViewCoverArtView
+-(void)layoutSubviews {
+    %orig;
+    if (mshJelloView != NULL && mshJelloView.config.enableDynamicColor) {
+        [self readjustWaveColor];
+    }
+}
+
+%new;
+-(void)readjustWaveColor{
+    UIColor *dynamicColor = averageColor(self.image, mshJelloView.config.dynamicColorAlpha);
+    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+}
+%end
+
 %hook SPTNowPlayingCoverArtViewCell
 -(void)setSelected:(BOOL)selected {
     %orig;
