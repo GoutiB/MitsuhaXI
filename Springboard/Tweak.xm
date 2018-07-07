@@ -72,10 +72,9 @@
 
 %new;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if ([keyPath isEqualToString:@"image"]) {
-    NSLog(@"[MitsuhaXI] imageReady");
-    [self readjustWaveColor];
-  }
+    if ([keyPath isEqualToString:@"image"]) {
+        [self readjustWaveColor];
+    }
 }
 
 %new;
@@ -156,7 +155,6 @@
 %new;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
   if ([keyPath isEqualToString:@"image"]) {
-    NSLog(@"[MitsuhaXI] imageReady");
     [self readjustWaveColor];
   }
 }

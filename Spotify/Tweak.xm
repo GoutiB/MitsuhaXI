@@ -17,7 +17,6 @@ MSHJelloView *mshJelloView = NULL;
 -(void)setSelected:(BOOL)selected {
     %orig;
     if (selected && self.shouldShowCoverArtView && (mshJelloView != NULL && mshJelloView.config.enableDynamicColor)) {
-        NSLog(@"[MitsuhaXI] readjust color (setSelected)");
         [self readjustWaveColor];
     }
 }

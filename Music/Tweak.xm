@@ -9,6 +9,7 @@ MSHJelloView *mshJelloView = NULL;
 
 -(void)layoutSubviews{
     %orig;
+    if (mshJelloView == NULL) return;
 
     UIView *me = (UIView *)self;
     
@@ -27,6 +28,8 @@ MSHJelloView *mshJelloView = NULL;
 
 %new;
 -(void)readjustWaveColor{
+    if (mshJelloView == NULL) return;
+
     UIColor *dynamicColor = averageColor(((MusicArtworkComponentImageView*)self).image, mshJelloView.config.dynamicColorAlpha);
     [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
 }
