@@ -7,7 +7,6 @@
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
 			<string>Dynamic controls color (experimental!)</string>
-			<key>title</key>
 			<key>key</key>
 			<string>MSHSpringboardEnableAutoUIColor</string>
 			<key>alternateColors</key>
