@@ -13,6 +13,10 @@
 }
 
 - (void)donate:(id)sender {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://ominous.cf/donate"] options:@{} completionHandler:nil];
+}
+
+- (void)donateColdrain:(id)sender {
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.me/c0ldra1n"] options:@{} completionHandler:nil];
 }
 

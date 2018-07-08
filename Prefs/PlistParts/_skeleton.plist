@@ -41,26 +41,6 @@
 			<key>alternateColors</key>
 			<true/>
 		</dict>
-        %EXTRA%
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>PFSimpleLiteColorCell</string>
-			<key>libcolorpicker</key>
-			<dict>
-				<key>defaults</key>
-				<string>io.c0ldra1n.mitsuhaxi-colors</string>
-				<key>key</key>
-				<string>MSH%APP_ID%WaveColor</string>
-				<key>fallback</key>
-				<string>%APP_COLOR%</string>
-				<key>alpha</key>
-				<true/>
-			</dict>
-			<key>label</key>
-			<string>Wave color</string>
-		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -69,7 +49,7 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
-			<string>Enable dynamic color (experimental)</string>
+			<string>Enable dynamic color</string>
 			<key>key</key>
 			<string>MSH%APP_ID%EnableDynamicColor</string>
 			<key>alternateColors</key>
@@ -101,6 +81,26 @@
 			<key>isSegmented</key>
 			<false/>
 		</dict>
+        %EXTRA%
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>PFSimpleLiteColorCell</string>
+			<key>libcolorpicker</key>
+			<dict>
+				<key>defaults</key>
+				<string>io.c0ldra1n.mitsuhaxi-colors</string>
+				<key>key</key>
+				<string>MSH%APP_ID%WaveColor</string>
+				<key>fallback</key>
+				<string>%APP_COLOR%</string>
+				<key>alpha</key>
+				<true/>
+			</dict>
+			<key>label</key>
+			<string>Wave color</string>
+		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSStaticTextCell</string>
@@ -129,13 +129,13 @@
 			<key>cell</key>
 			<string>PSStaticTextCell</string>
 			<key>label</key>
-			<string>Frames per second</string>
+			<string>Visualizer speed/frames per second</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>label</key>
-			<string>Frames per second</string>
+			<string>Visualizer speed/frames per second</string>
 			<key>default</key>
 			<real>24</real>
 			<key>defaults</key>

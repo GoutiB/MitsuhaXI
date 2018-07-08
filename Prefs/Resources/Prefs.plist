@@ -41,7 +41,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
-			<string>Springboard (Notification)</string>
+			<string>Lockscreen/Notification (Springboard)</string>
 			<key>detail</key>
 			<string>MSHSpringboardPrefsListController</string>
 		</dict>
@@ -84,7 +84,15 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>Donate to c0ldra1n</string>
+			<string>Donate to Ominousness (iOS 11 port developer)</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>donateColdrain:</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Donate to c0ldra1n (original developer)</string>
 		</dict>
 		<dict>
 			<key>cell</key>
