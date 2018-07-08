@@ -1,5 +1,5 @@
-Apps=(Music Soundcloud Spotify Springboard Deezer)
-Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc")
+Apps=(Music Soundcloud Spotify Springboard Deezer Tidal)
+Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc" "#fcfcfc")
 
 for idx in ${!Apps[*]}
 do

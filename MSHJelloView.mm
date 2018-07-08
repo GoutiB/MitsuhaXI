@@ -83,6 +83,8 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
             _waveOffset += 500;
         } else if ([_application isEqualToString:@"Deezer"]) {
             _waveOffset += 480;
+        } else if ([_application isEqualToString:@"Tidal"]) {
+            _waveOffset += 480;
         }
 
         _fps = [([dict objectForKey:@"fps"] ?: @(24)) doubleValue];
@@ -120,9 +122,9 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     prefs[@"waveOffset"] = ([prefs objectForKey:@"waveOffset"] ?: @(0));
     
     if ([name isEqualToString:@"Music"]) {
-        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.1");
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fc3059:0.4");
     } else {
-        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.2");
+        prefs[@"waveColor"] = LCPParseColorString([prefs objectForKey:@"waveColor"], @"#fcfcfc:0.4");
     }
     
     NSLog(@"[Mitsuha] Preferences parsed: %@", prefs);
