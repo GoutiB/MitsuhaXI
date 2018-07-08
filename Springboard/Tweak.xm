@@ -202,10 +202,12 @@
         //Check if Artsy is installed
         bool artsyEnabled = false;
         bool artsyLsEnabled = false;
-        bool artsyPresent = [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/lib/TweakInject/Artsy.dylib"] && [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/lib/TweakInject/Artsy.plist"];
+        bool artsyPresent = [[NSFileManager defaultManager] fileExistsAtPath: ArtsyTweakDylibFile] && [[NSFileManager defaultManager] fileExistsAtPath: ArtsyTweakPlistFile];
 
         if (artsyPresent) {
             NSLog(@"[MitsuhaXI] Artsy found");
+            artsyEnabled = true; //it's enabled by default when Artsy is installed
+            artsyLsEnabled = true;
             
             //Check if Artsy is enabled
             NSMutableDictionary *artsyPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:ArtsyPreferencesFile];
@@ -215,7 +217,7 @@
             }
         }
 
-        if (artsyLsEnabled) {
+        if (artsyEnabled && artsyLsEnabled) {
             NSLog(@"[MitsuhaXI] Artsy lsEnabled = true");
             %init(MitsuhaVisualsNotificationArtsy);
         } else {
