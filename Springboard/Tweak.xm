@@ -175,7 +175,7 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewDidDisappear:(BOOL)animated{
     %orig;
     [self.mitsuhaJelloView msdDisconnect];
 }
