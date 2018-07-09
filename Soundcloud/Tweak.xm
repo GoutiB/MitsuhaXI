@@ -42,7 +42,7 @@
     CGFloat height = CGRectGetHeight(self.view.bounds);
     self.view.clipsToBounds = 1;
     
-    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, self.mitsuhaJelloView.config.waveOffset, self.view.bounds.size.width, height) andConfig:config];
+    if (!self.mitsuhaJelloView) self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, self.mitsuhaJelloView.config.waveOffset, self.view.bounds.size.width, height) andConfig:config];
     [self.view insertSubview:self.mitsuhaJelloView atIndex:2];
 }
 
@@ -55,9 +55,9 @@
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewDidDisappear:(BOOL)animated{
     %orig;
-    [self.mitsuhaJelloView msdDisconnect];
+    //[self.mitsuhaJelloView msdDisconnect];
 }
 
 %new

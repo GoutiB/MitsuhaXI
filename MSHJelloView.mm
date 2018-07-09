@@ -193,7 +193,9 @@ float out[numberOfFramesOver2];
 
 -(void)reloadConfig{
     self.config = [MSHJelloViewConfig loadConfigForApplication:self.config.application];
-    [self updateWaveColor:self.config.waveColor subwaveColor:self.config.subwaveColor];
+    if (!self.config.enableDynamicColor) {
+        [self updateWaveColor:self.config.waveColor subwaveColor:self.config.subwaveColor];
+    }
     self.displayLink.preferredFramesPerSecond = self.config.fps;
 }
 
