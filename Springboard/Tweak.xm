@@ -47,6 +47,8 @@
 
 %end*/
 
+bool moveIntoPanel = false;
+int atIndexCC = 1;
 
 %group MitsuhaVisualsNotification
 
@@ -57,15 +59,20 @@
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
     if (!config.enabled) return;
 
-    CGFloat height = CGRectGetHeight(self.view.bounds);
     self.view.clipsToBounds = 1;
-    
-    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
-    [self.view addSubview:self.mitsuhaJelloView];
-    [self.view sendSubviewToBack:self.mitsuhaJelloView];
 
     MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
     [mcpvc.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
+    
+    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) andConfig:config];
+
+    if (!moveIntoPanel) {
+        [self.view addSubview:self.mitsuhaJelloView];
+        [self.view sendSubviewToBack:self.mitsuhaJelloView];
+    } else {
+        NSLog(@"[MitsuhaXI] Move into panel!");
+        [mcpvc.view insertSubview:self.mitsuhaJelloView atIndex:1];
+    }
 }
 
 %new;
@@ -129,25 +136,35 @@
 
 %end
 
-%group MitsuhaVisualsNotificationArtsy
+%group MitsuhaVisualsCC
 
 %hook MediaControlsPanelViewController
 
--(void)loadView{
+-(void)viewDidLayoutSubviews{
     %orig;
-    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
-    if (!config.enabled) return;
+    if (self.mitsuhaJelloView) return;
 
-    CGFloat height = CGRectGetHeight(self.view.bounds);
+    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"CC"];
+    if (!config.enabled) return;
+    
+    // Let's see if we're in CC - thanks to Maxwell Dausch (@M_Dausch on Twitter)
+    bool isCC = false;
+    UIResponder *nextResponder = self.view.nextResponder;
+    while (nextResponder) {
+        if ([NSStringFromClass([nextResponder class]) isEqualToString:@"CCUIContentModuleContainerViewController"]) {
+            isCC = true;
+            break;
+        }
+        nextResponder = nextResponder.nextResponder;
+    }
+
+    if (!isCC) return;
     self.view.clipsToBounds = 1;
     
-    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
-    [self.view addSubview:self.mitsuhaJelloView];
-    [self.view sendSubviewToBack:self.mitsuhaJelloView];
+    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) andConfig:config];
+    [self.view insertSubview:self.mitsuhaJelloView atIndex:atIndexCC];
 
-    if (self.mitsuhaJelloView.config.enableDynamicColor) {
-        [self.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
-    }
+    [self.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 %new;
@@ -200,26 +217,36 @@
         //Check if Artsy is installed
         bool artsyEnabled = false;
         bool artsyLsEnabled = false;
+        bool artsyCcEnabled = false;
         bool artsyPresent = [[NSFileManager defaultManager] fileExistsAtPath: ArtsyTweakDylibFile] && [[NSFileManager defaultManager] fileExistsAtPath: ArtsyTweakPlistFile];
 
         if (artsyPresent) {
             NSLog(@"[MitsuhaXI] Artsy found");
             artsyEnabled = true; //it's enabled by default when Artsy is installed
             artsyLsEnabled = true;
+            artsyCcEnabled = true;
             
             //Check if Artsy is enabled
             NSMutableDictionary *artsyPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:ArtsyPreferencesFile];
             if (artsyPrefs) {
                 artsyEnabled = [([artsyPrefs objectForKey:@"enabled"] ?: @(YES)) boolValue];
                 artsyLsEnabled = [([artsyPrefs objectForKey:@"lsEnabled"] ?: @(YES)) boolValue];
+                artsyCcEnabled = [([artsyPrefs objectForKey:@"ccEnabled"] ?: @(YES)) boolValue];
             }
         }
 
-        if (artsyEnabled && artsyLsEnabled) {
-            NSLog(@"[MitsuhaXI] Artsy lsEnabled = true");
-            %init(MitsuhaVisualsNotificationArtsy);
-        } else {
-            %init(MitsuhaVisualsNotification);
+        if (artsyEnabled) {
+            if (artsyLsEnabled) {
+                NSLog(@"[MitsuhaXI] Artsy lsEnabled = true");
+                moveIntoPanel = true;
+            }
+
+            if (artsyCcEnabled) {
+                atIndexCC = 2;
+            }
         }
+
+        %init(MitsuhaVisualsNotification);
+        %init(MitsuhaVisualsCC);
     }
 }

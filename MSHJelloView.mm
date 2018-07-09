@@ -79,6 +79,8 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
             _waveOffset += 250;
         } else if ([_application isEqualToString:@"Springboard"]) {
             _waveOffset += 250;
+        } else if ([_application isEqualToString:@"CC"]) {
+            _waveOffset += 250;
         } else if ([_application isEqualToString:@"Soundcloud"]) {
             _waveOffset += 500;
         } else if ([_application isEqualToString:@"Deezer"]) {

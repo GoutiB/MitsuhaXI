@@ -41,9 +41,17 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
-			<string>Lockscreen/Notification (Springboard)</string>
+			<string>Lockscreen/Notification</string>
 			<key>detail</key>
 			<string>MSHSpringboardPrefsListController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Control Center</string>
+			<key>detail</key>
+			<string>MSHCCPrefsListController</string>
 		</dict>
 		<!-- Credits -->
 		<dict>

@@ -25,7 +25,7 @@
 			<key>key</key>
 			<string>MSH%APP_ID%Enabled</string>
 			<key>alternateColors</key>
-			<true/>
+			<%APP_ENABLED%/>
 		</dict>
 		<dict>
 			<key>cell</key>

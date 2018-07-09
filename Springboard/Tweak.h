@@ -55,6 +55,7 @@
 @property (retain,nonatomic) MediaControlsHeaderView *headerView;
 @property (retain,nonatomic) MediaControlsParentContainerView *parentContainerView;
 @property (retain,nonatomic) MSHJelloView *mitsuhaJelloView;
+@property (retain,nonatomic) NSString *label;
 
 -(BOOL)handleEvent:(id)event;
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
