@@ -12,14 +12,6 @@ MSHJelloView *mshJelloView = NULL;
 
     if (mshJelloView != NULL && mshJelloView.config.enableDynamicColor) {
         [self readjustWaveColor];
-        //[self addObserver:self forKeyPath:@"artworkImage" options:NSKeyValueObservingOptionNew context:NULL];
-    }
-}
-
-%new;
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
-        [self readjustWaveColor];
     }
 }
 

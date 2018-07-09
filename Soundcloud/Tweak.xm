@@ -11,13 +11,15 @@
     MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
     if (mshJelloView.config.enableDynamicColor) {
         [self readjustWaveColor];
-        [self addObserver:self forKeyPath:@"artworkImage" options:NSKeyValueObservingOptionNew context:NULL];
     }
+
+    [self addObserver:self forKeyPath:@"artworkImage" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 %new;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"artworkImage"]) {
+    MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
+    if ([keyPath isEqualToString:@"artworkImage"] && mshJelloView.config.enableDynamicColor) {
         [self readjustWaveColor];
     }
 }

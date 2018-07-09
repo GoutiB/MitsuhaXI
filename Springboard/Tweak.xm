@@ -64,15 +64,13 @@
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
 
-    if (self.mitsuhaJelloView.config.enableDynamicColor) {
-        MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-        [mcpvc.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
-    }
+    MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
+    [mcpvc.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 %new;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
+    if ([keyPath isEqualToString:@"image"] && self.mitsuhaJelloView.config.enableDynamicColor) {
         [self readjustWaveColor];
     }
 }

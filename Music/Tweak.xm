@@ -13,7 +13,7 @@ MSHJelloView *mshJelloView = NULL;
 
     UIView *me = (UIView *)self;
     
-    if ([NSStringFromClass([me.superview class]) isEqualToString:@"Music.NowPlayingContentView"] && mshJelloView.config.enableDynamicColor) {
+    if ([NSStringFromClass([me.superview class]) isEqualToString:@"Music.NowPlayingContentView"]) {
         [self readjustWaveColor];
         [self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
     }
@@ -21,7 +21,7 @@ MSHJelloView *mshJelloView = NULL;
 
 %new;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
+    if ([keyPath isEqualToString:@"image"] && mshJelloView.config.enableDynamicColor) {
         [self readjustWaveColor];
     }
 }
