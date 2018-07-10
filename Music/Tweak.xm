@@ -1,5 +1,4 @@
 #import "Tweak.h"
-#import "../Utils/MSHColorUtils.mm"
 
 %group MitsuhaVisuals
 
@@ -29,9 +28,7 @@ MSHJelloView *mshJelloView = NULL;
 %new;
 -(void)readjustWaveColor{
     if (mshJelloView == NULL) return;
-
-    UIColor *dynamicColor = averageColor(((MusicArtworkComponentImageView*)self).image, mshJelloView.config.dynamicColorAlpha);
-    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [mshJelloView dynamicColor:((MusicArtworkComponentImageView*)self).image];
 }
 
 %end

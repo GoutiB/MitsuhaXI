@@ -15,6 +15,7 @@
 
 @property BOOL enableDynamicGain;
 @property BOOL enableDynamicColor;
+@property BOOL enableNewColor;
 @property BOOL enableAutoUIColor;
 @property BOOL enableFFT;
 @property BOOL enableCoverArtBugFix;
@@ -63,7 +64,10 @@
 @property (nonatomic, strong) MSHJelloLayer *waveLayer;
 @property (nonatomic, strong) MSHJelloLayer *subwaveLayer;
 
+@property (nonatomic, strong) UIColor *calculatedColor;
+
 -(void)updateWaveColor:(UIColor *)waveColor subwaveColor:(UIColor *)subwaveColor;
+-(void)dynamicColor:(UIImage *)image;
 
 -(void)reloadConfig;
 -(void)msdConnect;

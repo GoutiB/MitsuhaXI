@@ -1,5 +1,4 @@
 #import "Tweak.h"
-#import "../Utils/MSHColorUtils.mm"
 #define CFWBackgroundViewTagNumber 896541
 #define MSHColorFlowInstalled [%c(CFWPrefsManager) class]
 #define MSHColorFlowMusicEnabled MSHookIvar<BOOL>([%c(CFWPrefsManager) sharedInstance], "_musicEnabled")
@@ -23,8 +22,7 @@ MSHJelloView *mshJelloView = NULL;
 
 %new;
 -(void)readjustWaveColor{
-    UIColor *dynamicColor = averageColor(self.image, mshJelloView.config.dynamicColorAlpha);
-    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [mshJelloView dynamicColor:self.image];
 }
 %end
 
@@ -39,8 +37,7 @@ MSHJelloView *mshJelloView = NULL;
 %new;
 -(void)readjustWaveColor{
     if (mshJelloView == NULL) return;
-    UIColor *dynamicColor = averageColor(self.cellContentRepresentation, mshJelloView.config.dynamicColorAlpha);
-    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [mshJelloView dynamicColor:self.cellContentRepresentation];
 }
 %end
 

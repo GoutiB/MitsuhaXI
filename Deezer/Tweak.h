@@ -12,7 +12,6 @@
 @interface DeezerIllustrationView : UIView {
 }
 @property (retain, nonatomic) UIImage *image;
--(void)readjustWaveColor;
 
 @end
 

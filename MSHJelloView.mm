@@ -8,6 +8,7 @@
 
 #import "MSHJelloView.h"
 #import "MSHUtils.h"
+#import "Utils/MSHColorUtils.mm"
 #import <Accelerate/Accelerate.h>
 #import <libcolorpicker.h>
 #import <arpa/inet.h>
@@ -38,6 +39,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _enableDynamicColor = [([dict objectForKey:@"enableDynamicColor"] ?: @(NO)) boolValue];
+        _enableNewColor = [([dict objectForKey:@"enableNewColor"] ?: @(NO)) boolValue];
         _enableAutoUIColor = [([dict objectForKey:@"enableAutoUIColor"] ?: @(YES)) boolValue];
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
@@ -334,6 +336,19 @@ float out[numberOfFramesOver2];
         self.waveLayer.fillColor = waveColor.CGColor;
         self.subwaveLayer.fillColor = subwaveColor.CGColor;
     }];
+}
+
+-(void)dynamicColor:(UIImage *)image{
+    UIColor *color = self.config.waveColor;
+
+    if (self.config.enableNewColor) {
+        color = averageColorNew(image, self.config.dynamicColorAlpha);
+    } else {
+        color = averageColor(image, self.config.dynamicColorAlpha);
+    }
+
+    self.calculatedColor = color;
+    [self updateWaveColor:color subwaveColor:color];
 }
 
 - (void)redraw{

@@ -1,6 +1,6 @@
 #import "Tweak.h"
 #import "../MSHUtils.h"
-#import "../Utils/MSHColorUtils.mm"
+#import "../Utils/MSHIsDark.mm"
 
 /*
 %group MitsuhaVisuals
@@ -85,10 +85,9 @@ int atIndexCC = 1;
 %new;
 -(void)readjustWaveColor{
     MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
-    UIColor *dynamicColor = averageColor(mcpvc.headerView.artworkView.image, self.mitsuhaJelloView.config.dynamicColorAlpha);
-    [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [self.mitsuhaJelloView dynamicColor:mcpvc.headerView.artworkView.image];
     if (self.mitsuhaJelloView.config.enableAutoUIColor) {
-        [self readjustUIColor:dynamicColor];
+        [self readjustUIColor:self.mitsuhaJelloView.calculatedColor];
     }
 }
 
@@ -176,8 +175,7 @@ int atIndexCC = 1;
 
 %new;
 -(void)readjustWaveColor{
-    UIColor *dynamicColor = averageColor(self.headerView.artworkView.image, self.mitsuhaJelloView.config.dynamicColorAlpha);
-    [self.mitsuhaJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [self.mitsuhaJelloView dynamicColor:self.headerView.artworkView.image];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

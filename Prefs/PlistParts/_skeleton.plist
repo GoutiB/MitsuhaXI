@@ -57,6 +57,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>label</key>
+			<string>New color calculation method (experimental!)</string>
+			<key>key</key>
+			<string>MSH%APP_ID%EnableNewColor</string>
+			<key>alternateColors</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSStaticTextCell</string>
 			<key>label</key>
 			<string>Dynamic color alpha</string>

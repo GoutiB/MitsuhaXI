@@ -1,5 +1,4 @@
 #import "Tweak.h"
-#import "../Utils/MSHColorUtils.mm"
 
 %group MitsuhaVisuals
 
@@ -11,14 +10,8 @@ MSHJelloView *mshJelloView = NULL;
     %orig;
 
     if (mshJelloView != NULL && mshJelloView.config.enableDynamicColor) {
-        [self readjustWaveColor];
+        [mshJelloView dynamicColor:((DeezerIllustrationView*)self).image];
     }
-}
-
-%new;
--(void)readjustWaveColor{
-    UIColor *dynamicColor = averageColor(((DeezerIllustrationView*)self).image, mshJelloView.config.dynamicColorAlpha);
-    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
 }
 %end
 

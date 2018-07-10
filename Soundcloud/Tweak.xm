@@ -1,5 +1,4 @@
 #import "Tweak.h"
-#import "../Utils/MSHColorUtils.mm"
 
 %group MitsuhaVisuals
 
@@ -27,8 +26,7 @@
 %new;
 -(void)readjustWaveColor{
     MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
-    UIColor *dynamicColor = averageColor(self.artworkImage, mshJelloView.config.dynamicColorAlpha);
-    [mshJelloView updateWaveColor:dynamicColor subwaveColor:dynamicColor];
+    [mshJelloView dynamicColor:self.artworkImage];
 }
 %end
 

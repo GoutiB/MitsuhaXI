@@ -1,23 +1,3 @@
-BOOL isDark(UIColor *backgroundColor) {
-    size_t count = CGColorGetNumberOfComponents(backgroundColor.CGColor);
-    const CGFloat *componentColors = CGColorGetComponents(backgroundColor.CGColor);
-
-    CGFloat darknessScore = 0;
-    if (count == 2) {
-        darknessScore = (((componentColors[0]*255) * 299) + ((componentColors[0]*255) * 587) + ((componentColors[0]*255) * 114)) / 1000;
-    } else if (count == 4) {
-        darknessScore = (((componentColors[0]*255) * 299) + ((componentColors[1]*255) * 587) + ((componentColors[2]*255) * 114)) / 1000;
-    }
-
-    NSLog(@"[MitsuhaXI] Darkness score: %f", darknessScore);
-
-    if (darknessScore >= 125) {
-        return NO;
-    }
-
-    return YES;
-}
-
 UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
     if (!self)
         return nil;
@@ -29,6 +9,121 @@ UIColor * colorWithMinimumSaturation(UIColor *self, double saturation){
         return [UIColor colorWithHue:h saturation:saturation brightness:b alpha:a];
     
     return self;
+}
+
+/* Obj-C port of: https://github.com/jathu/UIImageColors/blob/master/Sources/UIImageColors.swift
+MIT Licensed, original author: @jathu
+*/
+
+@interface MSHColor : NSObject
+@property (nonatomic) UInt8 r;
+@property (nonatomic) UInt8 g;
+@property (nonatomic) UInt8 b;
+@property (nonatomic) UInt8 a;
+
+
++ (MSHColor *)fromLong:(unsigned long)color;
+-(bool)isBlackOrWhite;
+
+@end
+
+@implementation MSHColor
+    +(MSHColor *)fromLong:(unsigned long)color {
+        MSHColor *mshColor = [MSHColor alloc];
+        mshColor.b = (color) & 0xFF;
+        mshColor.g = (color >> 8) & 0xFF;
+        mshColor.r = (color >> 16) & 0xFF;
+        mshColor.a = (color >> 24) & 0xFF;
+        return mshColor;
+    }
+
+    -(bool)isBlackOrWhite {
+        return (self.r > 232 && self.g > 232 && self.b > 232) || (self.r < 23 && self.g < 23 && self.b < 23);
+    }
+
+    -(UIColor *)uicolorWithAlpha:(double)alpha {
+        return [UIColor colorWithRed:(self.r/255.0) green:(self.g/255.0) blue:(self.b/255.0) alpha:alpha];
+    }
+@end
+
+UIColor * averageColorNew(UIImage *self, double alpha) {
+    CGSize newSize = self.size;
+    double resizeTo = 15;
+    double ratio = self.size.height/self.size.width;
+    if (self.size.width < self.size.height) {
+        newSize = CGSizeMake(resizeTo/ratio, resizeTo);
+    } else {
+        newSize = CGSizeMake(resizeTo, resizeTo*ratio);
+    }
+
+    UIGraphicsBeginImageContext(newSize);
+    [self drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();    
+    UIGraphicsEndImageContext();
+
+    CGImageRef image = [newImage CGImage];
+    size_t width = CGImageGetWidth(image);
+    size_t height = CGImageGetHeight(image);
+    unsigned long length = sizeof(UInt8) * width * height * 4;
+
+    UInt8 *data = (UInt8 *) malloc(length);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef cgContext = CGBitmapContextCreate(data, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
+    CGContextSetBlendMode(cgContext, kCGBlendModeCopy);
+    CGContextDrawImage(cgContext, CGRectMake(0.0f, 0.0f, width, height), image);
+
+    CGContextRelease(cgContext);
+    CGColorSpaceRelease(colorSpace);
+
+    NSCountedSet *colors = [[NSCountedSet alloc] initWithCapacity:width*height];
+    for (unsigned long i = 0; i < length; i+=4) {
+        if (data[i+3] >= 127) {
+            unsigned long rgba = data[i] + (data[i+1] << 8) + (data[i+2] << 16) + (data[i+3] << 24);
+            [colors addObject:@(rgba)];
+        }
+    }
+
+    free(data);
+
+    int threshold = round(((CGFloat)width)/100);
+
+    NSMutableArray *dictArray = [NSMutableArray array];
+    [colors enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+        NSNumber *count = @([colors countForObject:obj]);
+        if ([count intValue] > threshold) {
+            [dictArray addObject:@{
+                @"color": [MSHColor fromLong:(unsigned long)[(NSNumber*)obj longValue]],
+                @"count": count
+            }];
+        }
+    }];
+    
+    [dictArray sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"count" ascending:NO]]];
+
+    NSDictionary *edgeColor;
+    if (dictArray.count > 0) {
+        edgeColor = (NSDictionary *)dictArray[0];
+    } else {
+        edgeColor = @{
+            @"color": [MSHColor fromLong:0],
+            @"count": @(1)
+        };
+    }
+    
+    if ([edgeColor[@"color"] isBlackOrWhite] && dictArray.count > 0) {
+        for (NSDictionary *cc in dictArray) {
+            if ([cc[@"count"] doubleValue] / [edgeColor[@"count"] doubleValue] > 0.3) {
+                if (![cc[@"color"] isBlackOrWhite]) {
+                    edgeColor = cc;
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    return [edgeColor[@"color"] uicolorWithAlpha:alpha];
 }
 
 UIColor * averageColor(UIImage *image, double alpha){
