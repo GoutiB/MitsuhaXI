@@ -1,7 +1,7 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
-#import <spawn.h>
+#import <CepheiPrefs/HBListController.h>
+#import <CepheiPrefs/HBAppearanceSettings.h>
 
-@interface MSHSpringboardPrefsListController : PSListController
-    - (void)respring:(id)sender;
+@interface MSHSpringboardPrefsListController : HBListController
 @end

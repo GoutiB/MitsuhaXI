@@ -1,6 +1,6 @@
 Package: io.ominousness.mitsuhaxi
 Name: MitsuhaXI
-Depends: org.thebigboss.libcolorpicker, io.ominousness.ass
+Depends: org.thebigboss.libcolorpicker, io.ominousness.ass, ws.hbang.common (>= 1.11)
 Conflicts: io.c0ldra1n.mitsuha, io.c0ldra1n.mitsuha-beta
 Version: 0.5.1.1
 Architecture: iphoneos-arm

@@ -1,6 +1,18 @@
 #import "MSHPrefsListController.h"
 
 @implementation MSHPrefsListController
+- (instancetype)init {
+    self = [super init];
+
+    if (self) {
+        HBAppearanceSettings *appearanceSettings = [[HBAppearanceSettings alloc] init];
+        appearanceSettings.tintColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1];
+        self.hb_appearanceSettings = appearanceSettings;
+    }
+
+    return self;
+}
+
 - (id)specifiers {
     if(_specifiers == nil) {
         _specifiers = [[self loadSpecifiersFromPlistName:@"Prefs" target:self] retain];

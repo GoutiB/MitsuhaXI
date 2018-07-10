@@ -1,6 +1,6 @@
 Apps=(Music Soundcloud Spotify Springboard Deezer CC)
 Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc" "#fcfcfc")
-Enabled=("true" "true" "true" "true" "true")
+Enabled=("true" "true" "true" "true" "true" "true")
 
 for idx in ${!Apps[*]}
 do
