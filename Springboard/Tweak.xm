@@ -3,6 +3,7 @@
 #import "../Utils/MSHIsDark.mm"
 
 MSHJelloView *homescreenJelloView = nil;
+bool shouldUpdateHSColor = false;
 
 %group MitsuhaHomescreen
 
@@ -22,6 +23,8 @@ MSHJelloView *homescreenJelloView = nil;
     homescreenJelloView = self.mitsuhaJelloView;
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
+
+    shouldUpdateHSColor = config.enableDynamicColor;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -88,11 +91,12 @@ int atIndexCC = 1;
 -(void)readjustWaveColor{
     MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
     [self.mitsuhaJelloView dynamicColor:mcpvc.headerView.artworkView.image];
-    if (homescreenJelloView) {
-        [homescreenJelloView dynamicColor:mcpvc.headerView.artworkView.image];
-    }
     if (self.mitsuhaJelloView.config.enableAutoUIColor) {
         [self readjustUIColor:self.mitsuhaJelloView.calculatedColor];
+    }
+
+    if (homescreenJelloView && shouldUpdateHSColor) {
+        [homescreenJelloView dynamicColor:mcpvc.headerView.artworkView.image];
     }
 }
 
@@ -181,6 +185,10 @@ int atIndexCC = 1;
 %new;
 -(void)readjustWaveColor{
     [self.mitsuhaJelloView dynamicColor:self.headerView.artworkView.image];
+
+    if (homescreenJelloView && shouldUpdateHSColor) {
+        [homescreenJelloView dynamicColor:self.headerView.artworkView.image];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
