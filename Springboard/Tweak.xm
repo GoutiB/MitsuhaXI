@@ -167,6 +167,8 @@ int atIndexCC = 1;
 
         if (!isCC) return;
         self.view.clipsToBounds = 1;
+        self.view.layer.cornerRadius = 20;
+        self.view.layer.masksToBounds = TRUE;
         
         self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) andConfig:config];
         [self.view insertSubview:self.mitsuhaJelloView atIndex:atIndexCC];
