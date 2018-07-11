@@ -32,6 +32,16 @@
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.me/c0ldra1n"] options:@{} completionHandler:nil];
 }
 
+- (void)resetPrefs:(id)sender {
+    HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:MSHPreferencesIdentifier];
+    [prefs removeAllObjects];
+
+    HBPreferences *colors = [[HBPreferences alloc] initWithIdentifier:MSHColorsIdentifier];
+    [colors removeAllObjects];
+
+    [self respring:sender];
+}
+
 - (void)respring:(id)sender {
 	pid_t pid;
     const char* args[] = {"killall", "backboardd", NULL};

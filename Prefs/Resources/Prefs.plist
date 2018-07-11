@@ -9,10 +9,16 @@
 			<string>PSGroupCell</string>
 			<key>headerCellClass</key>
 			<string>HBImageTableCell</string>
-			<key>height</key>
-			<integer>100</integer>
 			<key>icon</key>
 			<string>mitsuhaxi.png</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>Ominousness</string>
+			<key>user</key>
+			<string>TheOminousness</string>
 		</dict>
 		<!-- Apps -->
 		<dict>
@@ -95,6 +101,27 @@
 			<string>PSButtonCell</string>
 			<key>label</key>
 			<string>Restart mediaserverd</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>resetPrefs:</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>isDestructive</key>
+			<true />
+			<key>confirmation</key>
+			<dict>
+				<key>prompt</key>
+				<string>Are you sure you want to reset all your MitsuhaXI preferences? This can not be undone.</string>
+				<key>title</key>
+				<string>OK</string>
+				<key>okTitle</key>
+				<string>OK</string>
+				<key>cancelTitle</key>
+				<string>Cancel</string>
+			</dict>
+			<key>label</key>
+			<string>Restore default settings and respring</string>
 		</dict>
 		<dict>
 			<key>action</key>
