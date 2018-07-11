@@ -17,7 +17,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<true/>
+			<%APP_ENABLED%/>
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
@@ -25,7 +25,7 @@
 			<key>key</key>
 			<string>MSH%APP_ID%Enabled</string>
 			<key>alternateColors</key>
-			<%APP_ENABLED%/>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -190,6 +190,20 @@
 			<true/>
 			<key>isSegmented</key>
 			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
+			<key>label</key>
+			<string>Enable battery saver</string>
+			<key>key</key>
+			<string>MSH%APP_ID%EnableBatterySaver</string>
+			<key>alternateColors</key>
+			<true/>
 		</dict>
 		<!-- Credits -->
 		<dict>

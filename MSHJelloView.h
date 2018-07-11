@@ -19,7 +19,7 @@
 @property BOOL enableAutoUIColor;
 @property BOOL enableFFT;
 @property BOOL enableCoverArtBugFix;
-@property BOOL enableArtsySupport;
+@property BOOL enableBatterySaver;
 @property double gain;
 @property double limiter;
 

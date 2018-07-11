@@ -50,7 +50,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _ignoreColorFlow = [([dict objectForKey:@"ignoreColorFlow"] ?: @(NO)) boolValue];
         _enableCircleArtwork = [([dict objectForKey:@"enableCircleArtwork"] ?: @(NO)) boolValue];
         _enableCoverArtBugFix = [([dict objectForKey:@"enableCoverArtBugFix"] ?: @(NO)) boolValue];
-        _enableArtsySupport = [([dict objectForKey:@"enableArtsySupport"] ?: @(NO)) boolValue];
+        _enableBatterySaver = [([dict objectForKey:@"enableBatterySaver"] ?: @(YES)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
         
         if([dict objectForKey:@"waveColor"]){
@@ -216,6 +216,7 @@ float out[numberOfFramesOver2];
 }
 
 -(void)msdDisconnect{
+    if (!self.config.enableBatterySaver) return;
     NSLog(@"[MitsuhaXI] Disconnect");
     close(connfd);
     connfd = -2;
