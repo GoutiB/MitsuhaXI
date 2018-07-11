@@ -6,6 +6,9 @@
 
 -(void)layoutSubviews{
     %orig;
+    if (!self.superview) return;
+    if (!self.superview.nextResponder) return;
+    if (![NSStringFromClass([self.superview.nextResponder class]) isEqualToString:@"TrackPlayerViewController"]) return;
 
     MSHJelloView *mshJelloView = ((TrackPlayerViewController *)self.superview.nextResponder).mitsuhaJelloView;
     if (mshJelloView.config.enableDynamicColor) {
