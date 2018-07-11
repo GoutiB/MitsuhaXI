@@ -2,15 +2,16 @@
 #import "../MSHUtils.h"
 #import "../Utils/MSHIsDark.mm"
 
-/*
-%group MitsuhaVisuals
+MSHJelloView *homescreenJelloView = nil;
+
+%group MitsuhaHomescreen
 
 %hook SBIconController
 
 -(void)loadView{
     %orig;
     
-    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
+    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Homescreen"];
     if (!config.enabled) return;
     
     CGFloat height = CGRectGetHeight(self.view.bounds);
@@ -18,6 +19,7 @@
     self.view.clipsToBounds = 1;
     
     self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
+    homescreenJelloView = self.mitsuhaJelloView;
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
 }
@@ -45,7 +47,7 @@
 
 %end
 
-%end*/
+%end
 
 bool moveIntoPanel = false;
 int atIndexCC = 1;
@@ -86,6 +88,9 @@ int atIndexCC = 1;
 -(void)readjustWaveColor{
     MediaControlsPanelViewController *mcpvc = (MediaControlsPanelViewController*)[self valueForKey:@"_mediaControlsPanelViewController"];
     [self.mitsuhaJelloView dynamicColor:mcpvc.headerView.artworkView.image];
+    if (homescreenJelloView) {
+        [homescreenJelloView dynamicColor:mcpvc.headerView.artworkView.image];
+    }
     if (self.mitsuhaJelloView.config.enableAutoUIColor) {
         [self readjustUIColor:self.mitsuhaJelloView.calculatedColor];
     }
@@ -210,10 +215,13 @@ int atIndexCC = 1;
 %ctor{
     MSHJelloViewConfig *config_ls = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
     MSHJelloViewConfig *config_cc = [MSHJelloViewConfig loadConfigForApplication:@"CC"];
-    
-    if(config_ls.enabled || config_cc.enabled){
-        //%init(MitsuhaVisuals); disable homescreen for now
+    MSHJelloViewConfig *config_hs = [MSHJelloViewConfig loadConfigForApplication:@"Homescreen"];
 
+    if(config_hs.enabled) {
+        %init(MitsuhaHomescreen);
+    }
+
+    if(config_ls.enabled || config_cc.enabled){
         //Check if Artsy is installed
         bool artsyEnabled = false;
         bool artsyLsEnabled = false;

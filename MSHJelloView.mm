@@ -36,7 +36,12 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     
     if (self) {
         _application = [dict objectForKey:@"application"];
-        _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
+        if ([_application isEqualToString:@"Homescreen"]) {
+            _enabled = [([dict objectForKey:@"enabled"] ?: @(NO)) boolValue];
+        } else {
+            _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
+        }
+        
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _enableDynamicColor = [([dict objectForKey:@"enableDynamicColor"] ?: @(NO)) boolValue];
         _enableNewColor = [([dict objectForKey:@"enableNewColor"] ?: @(NO)) boolValue];

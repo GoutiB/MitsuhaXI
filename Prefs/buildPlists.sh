@@ -1,6 +1,6 @@
-Apps=(Music Soundcloud Spotify Springboard Deezer CC)
-Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc" "#fcfcfc")
-Enabled=("true" "true" "true" "true" "true" "true")
+Apps=(Music Soundcloud Spotify Springboard Deezer CC Homescreen)
+Colors=("#fc3059" "#fc3059" "#fcfcfc" "#fcfcfc" "#fcfcfc" "#fcfcfc" "#fcfcfc")
+Enabled=("true" "true" "true" "true" "true" "true" "false")
 
 for idx in ${!Apps[*]}
 do

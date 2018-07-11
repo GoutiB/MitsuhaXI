@@ -59,6 +59,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Homescreen</string>
+			<key>detail</key>
+			<string>MSHHomescreenPrefsListController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Control Center</string>
 			<key>detail</key>
 			<string>MSHCCPrefsListController</string>
