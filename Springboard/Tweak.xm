@@ -208,8 +208,10 @@ int atIndexCC = 1;
 %end
 
 %ctor{
-    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
-    if(config.enabled){
+    MSHJelloViewConfig *config_ls = [MSHJelloViewConfig loadConfigForApplication:@"Springboard"];
+    MSHJelloViewConfig *config_cc = [MSHJelloViewConfig loadConfigForApplication:@"CC"];
+    
+    if(config_ls.enabled || config_cc.enabled){
         //%init(MitsuhaVisuals); disable homescreen for now
 
         //Check if Artsy is installed
@@ -244,7 +246,12 @@ int atIndexCC = 1;
             }
         }
 
-        %init(MitsuhaVisualsNotification);
-        %init(MitsuhaVisualsCC);
+        if (config_ls.enabled) {
+            %init(MitsuhaVisualsNotification);
+        }
+
+        if (config_cc.enabled) {
+            %init(MitsuhaVisualsCC);
+        }
     }
 }
