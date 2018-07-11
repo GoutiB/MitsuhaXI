@@ -6,5 +6,6 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = MitsuhaXIMusic
 $(TWEAK_NAME)_FILES = Tweak.xm ../MSHJelloView.mm
 $(TWEAK_NAME)_LIBRARIES += colorpicker
+$(TWEAK_NAME)_EXTRA_FRAMEWORKS += Cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk

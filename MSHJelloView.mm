@@ -9,6 +9,7 @@
 #import "MSHJelloView.h"
 #import "MSHUtils.h"
 #import "Utils/MSHColorUtils.mm"
+#import <Cephei/HBPreferences.h>
 #import <Accelerate/Accelerate.h>
 #import <libcolorpicker.h>
 #import <arpa/inet.h>
@@ -41,7 +42,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         } else {
             _enabled = [([dict objectForKey:@"enabled"] ?: @(YES)) boolValue];
         }
-        
+
         _enableDynamicGain = [([dict objectForKey:@"enableDynamicGain"] ?: @(NO)) boolValue];
         _enableDynamicColor = [([dict objectForKey:@"enableDynamicColor"] ?: @(NO)) boolValue];
         _enableNewColor = [([dict objectForKey:@"enableNewColor"] ?: @(NO)) boolValue];
@@ -87,7 +88,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         } else if ([_application isEqualToString:@"Springboard"]) {
             _waveOffset += 250;
         } else if ([_application isEqualToString:@"CC"]) {
-            _waveOffset += 250;
+            _waveOffset += 170;
         } else if ([_application isEqualToString:@"Soundcloud"]) {
             _waveOffset += 500;
         } else if ([_application isEqualToString:@"Deezer"]) {
@@ -104,15 +105,23 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     NSMutableDictionary *prefs = [@{} mutableCopy];
     [prefs setValue:name forKey:@"application"];
 
-    NSMutableDictionary *file = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHPreferencesFile];
+    HBPreferences *file = [[HBPreferences alloc] initWithIdentifier:MSHPreferencesIdentifier];
+    int version = [([file objectForKey:@"MSHVersion"] ?: @(1)) intValue];
+    if (version == 1) {
+        NSLog(@"[MitsuhaXI] Old version detected. Writing new prefs...");
+        [file setObject:@(2) forKey:@"MSHVersion"];
+        [file setObject:@(0.0f) forKey:@"MSHCCWaveOffset"];
+    }
+
+
     NSLog(@"[Mitsuha] Preferences: %@", file);
-    for (NSString *key in [file allKeys]) {
+    for (NSString *key in [file.dictionaryRepresentation allKeys]) {
         [prefs setValue:[file objectForKey:key] forKey:key];
     }
 
-    file = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHColorsFile];
+    file = [[HBPreferences alloc] initWithIdentifier:MSHColorsIdentifier];
     NSLog(@"[Mitsuha] Colors: %@", file);
-    for (NSString *key in [file allKeys]) {
+    for (NSString *key in [file.dictionaryRepresentation allKeys]) {
         [prefs setValue:[file objectForKey:key] forKey:key];
     }
     
