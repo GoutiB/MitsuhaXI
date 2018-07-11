@@ -153,24 +153,24 @@ int atIndexCC = 1;
     if (self.mitsuhaJelloView) return;
 
     MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"CC"];
-    if (!config.enabled) return;
-    
-    // Let's see if we're in CC - thanks to Maxwell Dausch (@M_Dausch on Twitter)
-    bool isCC = false;
-    UIResponder *nextResponder = self.view.nextResponder;
-    while (nextResponder) {
-        if ([NSStringFromClass([nextResponder class]) isEqualToString:@"CCUIContentModuleContainerViewController"]) {
-            isCC = true;
-            break;
+    if (config.enabled) {
+        // Let's see if we're in CC - thanks to Maxwell Dausch (@M_Dausch on Twitter)
+        bool isCC = false;
+        UIResponder *nextResponder = self.view.nextResponder;
+        while (nextResponder) {
+            if ([NSStringFromClass([nextResponder class]) isEqualToString:@"CCUIContentModuleContainerViewController"]) {
+                isCC = true;
+                break;
+            }
+            nextResponder = nextResponder.nextResponder;
         }
-        nextResponder = nextResponder.nextResponder;
-    }
 
-    if (!isCC) return;
-    self.view.clipsToBounds = 1;
-    
-    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) andConfig:config];
-    [self.view insertSubview:self.mitsuhaJelloView atIndex:atIndexCC];
+        if (!isCC) return;
+        self.view.clipsToBounds = 1;
+        
+        self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) andConfig:config];
+        [self.view insertSubview:self.mitsuhaJelloView atIndex:atIndexCC];
+    }
 
     [self.headerView.artworkView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
 }
@@ -184,7 +184,9 @@ int atIndexCC = 1;
 
 %new;
 -(void)readjustWaveColor{
-    [self.mitsuhaJelloView dynamicColor:self.headerView.artworkView.image];
+    if (self.mitsuhaJelloView && self.mitsuhaJelloView.config.enableDynamicColor) {
+        [self.mitsuhaJelloView dynamicColor:self.headerView.artworkView.image];
+    }
 
     if (homescreenJelloView && shouldUpdateHSColor) {
         [homescreenJelloView dynamicColor:self.headerView.artworkView.image];
@@ -193,16 +195,16 @@ int atIndexCC = 1;
 
 -(void)viewWillAppear:(BOOL)animated{
     %orig;
+    if (!self.mitsuhaJelloView) return;
     [self.mitsuhaJelloView msdConnect];
     self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.config.waveOffset);
     [self.mitsuhaJelloView reloadConfig];
-    if (self.mitsuhaJelloView.config.enableDynamicColor) {
-        [self readjustWaveColor];
-    }
+    [self readjustWaveColor];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     %orig;
+    if (!self.mitsuhaJelloView) return;
     [self.mitsuhaJelloView msdDisconnect];
 }
 
@@ -265,9 +267,9 @@ int atIndexCC = 1;
         if (config_ls.enabled) {
             %init(MitsuhaVisualsNotification);
         }
+    }
 
-        if (config_cc.enabled) {
-            %init(MitsuhaVisualsCC);
-        }
+    if (config_cc.enabled || config_hs.enabled) {
+        %init(MitsuhaVisualsCC); // we need this for the dynamic color to work properly on the homescreen
     }
 }
