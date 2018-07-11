@@ -22,7 +22,8 @@ MIT Licensed, original author: @jathu
 @property (nonatomic) UInt8 a;
 
 
-+ (MSHColor *)fromLong:(unsigned long)color;
++(MSHColor *)fromLong:(unsigned long)color;
+-(void)setLong:(unsigned long)color;
 -(bool)isBlackOrWhite;
 
 @end
@@ -37,6 +38,17 @@ MIT Licensed, original author: @jathu
         return mshColor;
     }
 
+    -(void)setLong:(unsigned long)color {
+        self.b = (color) & 0xFF;
+        self.g = (color >> 8) & 0xFF;
+        self.r = (color >> 16) & 0xFF;
+        self.a = (color >> 24) & 0xFF;
+    }
+
+    -(unsigned long)toLong {
+        return self.b + (self.g << 8) + (self.r << 16) + (self.a << 24);
+    }
+
     -(bool)isBlackOrWhite {
         return (self.r > 232 && self.g > 232 && self.b > 232) || (self.r < 23 && self.g < 23 && self.b < 23);
     }
@@ -48,7 +60,7 @@ MIT Licensed, original author: @jathu
 
 UIColor * averageColorNew(UIImage *self, double alpha) {
     CGSize newSize = self.size;
-    double resizeTo = 15;
+    double resizeTo = 25;
     double ratio = self.size.height/self.size.width;
     if (self.size.width < self.size.height) {
         newSize = CGSizeMake(resizeTo/ratio, resizeTo);
@@ -92,7 +104,7 @@ UIColor * averageColorNew(UIImage *self, double alpha) {
         NSNumber *count = @([colors countForObject:obj]);
         if ([count intValue] > threshold) {
             [dictArray addObject:@{
-                @"color": [MSHColor fromLong:(unsigned long)[(NSNumber*)obj longValue]],
+                @"color": obj,
                 @"count": count
             }];
         }
@@ -105,15 +117,17 @@ UIColor * averageColorNew(UIImage *self, double alpha) {
         edgeColor = (NSDictionary *)dictArray[0];
     } else {
         edgeColor = @{
-            @"color": [MSHColor fromLong:0],
+            @"color": @(0),
             @"count": @(1)
         };
     }
     
-    if ([edgeColor[@"color"] isBlackOrWhite] && dictArray.count > 0) {
+    MSHColor *tempColor = [MSHColor fromLong:(unsigned long)[edgeColor[@"color"] longValue]];
+    if ([tempColor isBlackOrWhite] && dictArray.count > 0) {
         for (NSDictionary *cc in dictArray) {
             if ([cc[@"count"] doubleValue] / [edgeColor[@"count"] doubleValue] > 0.3) {
-                if (![cc[@"color"] isBlackOrWhite]) {
+                [tempColor setLong:(unsigned long)[cc[@"color"] longValue]];
+                if (![tempColor isBlackOrWhite]) {
                     edgeColor = cc;
                     break;
                 }
@@ -123,7 +137,7 @@ UIColor * averageColorNew(UIImage *self, double alpha) {
         }
     }
 
-    return [edgeColor[@"color"] uicolorWithAlpha:alpha];
+    return [tempColor uicolorWithAlpha:alpha];
 }
 
 UIColor * averageColor(UIImage *image, double alpha){
