@@ -52,6 +52,7 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         _enableCoverArtBugFix = [([dict objectForKey:@"enableCoverArtBugFix"] ?: @(NO)) boolValue];
         _enableBatterySaver = [([dict objectForKey:@"enableBatterySaver"] ?: @(YES)) boolValue];
         _enableFFT = [([dict objectForKey:@"enableFFT"] ?: @(NO)) boolValue];
+        _enableAutoHide = [([dict objectForKey:@"enableAutoHide"] ?: @(NO)) boolValue];
         
         if([dict objectForKey:@"waveColor"]){
             if([[dict objectForKey:@"waveColor"] isKindOfClass:[UIColor class]]){
@@ -195,6 +196,7 @@ float out[numberOfFramesOver2];
         self.config = config;
         [self initializeWaveLayers];
 
+        jelloHidden = false;
         empty[0] = 0.0f;
 
         self.shouldUpdate = true;
@@ -314,7 +316,11 @@ float out[numberOfFramesOver2];
     
     self.waveLayer.zPosition = 0;
     self.subwaveLayer.zPosition = -1;
-    
+
+    if (self.config.enableAutoHide) {
+        [self setAlpha:0.0f];
+    }
+
     [self configureDisplayLink];
     [self resetWaveLayers];
 }
@@ -347,10 +353,10 @@ float out[numberOfFramesOver2];
 }
 
 -(void)updateWaveColor:(UIColor *)waveColor subwaveColor:(UIColor *)subwaveColor{
-    [UIView animateWithDuration:10.0 animations:^{
+    //[UIView animateWithDuration:10.0 animations:^{
         self.waveLayer.fillColor = waveColor.CGColor;
         self.subwaveLayer.fillColor = subwaveColor.CGColor;
-    }];
+    //}];
 }
 
 -(void)dynamicColor:(UIImage *)image{
@@ -374,6 +380,22 @@ float out[numberOfFramesOver2];
                                      pointCount:self.config.numberOfPoints
                                          inRect:self.bounds];
     self.waveLayer.path = path;
+
+    if (self.config.enableAutoHide) {
+        if (silentSince < ((long long)[[NSDate date] timeIntervalSince1970] - 1)) {
+            if (!jelloHidden) {
+                jelloHidden = true;
+                [UIView animateWithDuration:0.5 animations:^{
+                    [self setAlpha:0.0f];
+                }];
+            }
+        } else if (jelloHidden) {
+            jelloHidden = false;
+            [UIView animateWithDuration:0.5 animations:^{
+                [self setAlpha:1.0f];
+            }];
+        }
+    }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.subwaveLayer.path = path;
@@ -447,6 +469,15 @@ float out[numberOfFramesOver2];
 }
 
 -(void)updateBuffer:(float *)bufferData withLength:(int)length{
+    if (self.config.enableAutoHide) {
+        for (int i = 0; i < length; i++) {
+            if (bufferData[i] != 0) {
+                silentSince = (long long)[[NSDate date] timeIntervalSince1970];
+                break;
+            }
+        }
+    }
+
     if (self.config.enableFFT && length == MSHAudioBufferSize) {
         vDSP_vmul(bufferData, 1, window, 1, bufferData, 1, MSHAudioBufferSize);
         vDSP_ctoz((COMPLEX *)bufferData, 2, &output, 1, numberOfFramesOver2);

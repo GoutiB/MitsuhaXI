@@ -20,6 +20,7 @@
 @property BOOL enableFFT;
 @property BOOL enableCoverArtBugFix;
 @property BOOL enableBatterySaver;
+@property BOOL enableAutoHide;
 @property double gain;
 @property double limiter;
 
@@ -53,6 +54,8 @@
     NSUInteger cachedLength;
     int connfd;
     float *empty;
+    long long silentSince;
+    bool jelloHidden;
 }
 
 @property (nonatomic, strong) MSHJelloViewConfig *config;
