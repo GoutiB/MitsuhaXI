@@ -35,7 +35,7 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
-			<string>Enable FFT</string>
+			<string>FFT (frequency instead of amplitude)</string>
 			<key>key</key>
 			<string>MSH%APP_ID%EnableFFT</string>
 			<key>alternateColors</key>
@@ -63,7 +63,7 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
-			<string>Enable dynamic color</string>
+			<string>Dynamic color based on artwork</string>
 			<key>key</key>
 			<string>MSH%APP_ID%EnableDynamicColor</string>
 			<key>alternateColors</key>
@@ -213,7 +213,7 @@
 			<key>defaults</key>
 			<string>io.c0ldra1n.mitsuhaxi-prefs</string>
 			<key>label</key>
-			<string>Enable battery saver</string>
+			<string>Battery saver (may cause wave freezing)</string>
 			<key>key</key>
 			<string>MSH%APP_ID%EnableBatterySaver</string>
 			<key>alternateColors</key>

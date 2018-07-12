@@ -7,6 +7,7 @@
     if (self) {
         HBAppearanceSettings *appearanceSettings = [[HBAppearanceSettings alloc] init];
         appearanceSettings.tintColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1];
+        appearanceSettings.tableViewCellSeparatorColor = [UIColor colorWithWhite:0 alpha:0];
         self.hb_appearanceSettings = appearanceSettings;
     }
 
@@ -20,16 +21,14 @@
     return _specifiers;
 }
 
-- (void)visitGithub:(id)sender {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Ominousness/MitsuhaXI"] options:@{} completionHandler:nil];
-}
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
 
-- (void)donate:(id)sender {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://ominous.cf/donate"] options:@{} completionHandler:nil];
-}
-
-- (void)donateColdrain:(id)sender {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.me/c0ldra1n"] options:@{} completionHandler:nil];
+    CGRect frame = self.table.bounds;
+    frame.origin.y = -frame.size.height;
+	
+    [self.navigationController.navigationController.navigationBar setShadowImage: [UIImage new]];
+    self.navigationController.navigationController.navigationBar.translucent = YES;
 }
 
 - (void)resetPrefs:(id)sender {

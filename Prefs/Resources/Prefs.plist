@@ -123,30 +123,39 @@
 			<key>label</key>
 			<string>Restore default settings and respring</string>
 		</dict>
+
+
 		<dict>
-			<key>action</key>
-			<string>visitGithub:</string>
-			<key>cell</key>
-			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
 			<key>label</key>
-			<string>GitHub (source code)</string>
+			<string>Github</string>
+			<key>subtitle</key>
+			<string>Source code</string>
+			<key>url</key>
+			<string>https://github.com/Ominousness/MitsuhaXI</string>
 		</dict>
 		<dict>
-			<key>action</key>
-			<string>donate:</string>
-			<key>cell</key>
-			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
 			<key>label</key>
-			<string>Donate to Ominousness (iOS 11 port developer)</string>
+			<string>Donate to Ominousness</string>
+			<key>subtitle</key>
+			<string>iOS 11 port developer</string>
+			<key>url</key>
+			<string>https://ominous.cf/donate</string>
 		</dict>
 		<dict>
-			<key>action</key>
-			<string>donateColdrain:</string>
-			<key>cell</key>
-			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
 			<key>label</key>
-			<string>Donate to c0ldra1n (original developer)</string>
+			<string>Donate to c0ldra1n</string>
+			<key>subtitle</key>
+			<string>original developer of Mitsuha for iOS 9 and 10</string>
+			<key>url</key>
+			<string>https://www.paypal.me/c0ldra1n</string>
 		</dict>
+
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
