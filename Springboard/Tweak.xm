@@ -17,9 +17,8 @@ bool shouldUpdateHSColor = false;
     
     CGFloat height = CGRectGetHeight(self.view.bounds);
     config.waveOffset += height*(9/10) + 100;
-    self.view.clipsToBounds = 1;
     
-    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height) andConfig:config];
+    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(-25, 0, self.view.bounds.size.width + 50, height) andConfig:config];
     homescreenJelloView = self.mitsuhaJelloView;
     [self.view addSubview:self.mitsuhaJelloView];
     [self.view sendSubviewToBack:self.mitsuhaJelloView];
