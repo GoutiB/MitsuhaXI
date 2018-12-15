@@ -2,9 +2,9 @@ Package: io.ominousness.mitsuhaxi
 Name: MitsuhaXI
 Depends: org.thebigboss.libcolorpicker, io.ominousness.ass, ws.hbang.common (>= 1.11)
 Conflicts: io.c0ldra1n.mitsuha, io.c0ldra1n.mitsuha-beta
-Version: 0.5.3
+Version: 0.5.4
 Architecture: iphoneos-arm
 Description: Universal iOS 11 audio visualizer
-Maintainer: Ominousness
-Author: c0ldra1n & Ominousness
+Maintainer: Nepeta
+Author: c0ldra1n & Nepeta
 Section: Tweaks

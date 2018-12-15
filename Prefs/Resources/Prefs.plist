@@ -16,9 +16,9 @@
 			<key>cellClass</key>
 			<string>HBTwitterCell</string>
 			<key>label</key>
-			<string>Ominousness</string>
+			<string>Nepeta</string>
 			<key>user</key>
-			<string>TheOminousness</string>
+			<string>NepetaDev</string>
 		</dict>
 		<!-- Apps -->
 		<dict>
@@ -133,13 +133,13 @@
 			<key>subtitle</key>
 			<string>Source code</string>
 			<key>url</key>
-			<string>https://github.com/Ominousness/MitsuhaXI</string>
+			<string>https://github.com/Nepeta/MitsuhaXI</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>
 			<key>label</key>
-			<string>Donate to Ominousness</string>
+			<string>Donate to Nepeta</string>
 			<key>subtitle</key>
 			<string>iOS 11 port developer</string>
 			<key>url</key>
@@ -161,7 +161,7 @@
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>Mitsuha, Mitsuha2 by c0ldra1n,
-ported to iOS 11 by Ominousness.</string>
+ported to iOS 11 by Nepeta.</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
