@@ -6,9 +6,8 @@ This is a fork of c0ldra1n's excellent tweak - [Mitsuha2](https://github.com/c0l
 
 **iOS 11.0-11.3.1 required.**
 
-1. Make sure [Electra](https://coolstar.org/electra/) is installed.
-2. Add this repository to Cydia: https://repo.nepeta.me/
-3. Install MitsuhaXI.
+1. Add this repository to Cydia: https://repo.nepeta.me/
+2. Install **MitsuhaXI**.
 
 ## Compatibility
 
@@ -23,7 +22,7 @@ This is a fork of c0ldra1n's excellent tweak - [Mitsuha2](https://github.com/c0l
 
 Should be compatible with EclipseX and similar tweaks. Spotify version is confirmed to work with ColorFlow.
 
-Doesn't work with Artsy for now.
+Works with Artsy.
 
 ## Bugs
 
