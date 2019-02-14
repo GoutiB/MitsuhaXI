@@ -119,11 +119,11 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
     for (NSString *key in [file.dictionaryRepresentation allKeys]) {
         [prefs setValue:[file objectForKey:key] forKey:key];
     }
-
-    file = [[HBPreferences alloc] initWithIdentifier:MSHColorsIdentifier];
-    NSLog(@"[Mitsuha] Colors: %@", file);
-    for (NSString *key in [file.dictionaryRepresentation allKeys]) {
-        [prefs setValue:[file objectForKey:key] forKey:key];
+    
+    NSMutableDictionary *colors = [[NSMutableDictionary alloc] initWithContentsOfFile:MSHColorsFile];
+    NSLog(@"[Mitsuha] Colors: %@", colors);
+    for (NSString *key in [colors allKeys]) {
+        [prefs setValue:[colors objectForKey:key] forKey:key];
     }
     
     for (NSString *key in [prefs allKeys]) {

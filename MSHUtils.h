@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #define MSHPreferencesIdentifier @"io.c0ldra1n.mitsuhaxi-prefs"
+#define MSHColorsFile @"/var/mobile/Library/Preferences/io.c0ldra1n.mitsuhaxi-colors.plist"
 #define MSHColorsIdentifier @"io.c0ldra1n.mitsuhaxi-colors"
 #define ArtsyPreferencesFile @"/var/mobile/Library/Preferences/ch.mdaus.artsy.plist"
 #define ArtsyTweakDylibFile @"/usr/lib/TweakInject/Artsy.dylib"
