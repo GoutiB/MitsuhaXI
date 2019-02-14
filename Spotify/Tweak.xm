@@ -26,6 +26,15 @@ MSHJelloView *mshJelloView = NULL;
 }
 %end
 
+%hook SPTNowPlayingCoverArtImageContentView
+-(void)setImage:(UIImage *)image {
+    %orig;
+    if ((mshJelloView != NULL && mshJelloView.config.enableDynamicColor)) {
+        [mshJelloView dynamicColor:image];
+    }
+}
+%end
+
 %hook SPTNowPlayingCoverArtViewCell
 -(void)setSelected:(BOOL)selected {
     %orig;
@@ -226,6 +235,90 @@ MSHJelloView *mshJelloView = NULL;
     }
 }
 %end
+
+%hook SPTNowPlayingScrollViewController
+-(void)viewDidLoad{
+    %orig;
+
+    NSLog(@"[Mitsuha]: viewDidLoad");
+    
+    currentBackgroundMusicVC = (SPTUniversalController*)self;
+    MSHJelloViewConfig *config = [MSHJelloViewConfig loadConfigForApplication:@"Spotify"];
+    if (!config.enabled) return;
+
+    CGFloat height = CGRectGetHeight(self.view.bounds) - config.waveOffset;
+    
+    self.mitsuhaJelloView = [[MSHJelloView alloc] initWithFrame:CGRectMake(0, config.waveOffset, self.view.bounds.size.width, height) andConfig:config];
+    mshJelloView = self.mitsuhaJelloView;
+    [self.view insertSubview:self.mitsuhaJelloView atIndex:2];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateVolume:)
+                                                 name:@"AVSystemController_SystemVolumeDidChangeNotification"
+                                               object:nil];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [self.mitsuhaJelloView reloadConfig];
+
+    CGFloat height = CGRectGetHeight(self.view.bounds) - self.mitsuhaJelloView.config.waveOffset;
+    self.mitsuhaJelloView.frame = CGRectMake(0, self.mitsuhaJelloView.config.waveOffset, self.view.bounds.size.width, height);
+
+    [self.mitsuhaJelloView msdConnect];
+    self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
+    %orig;
+    self.mitsuhaJelloView.shouldUpdate = true;
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    %orig;
+    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
+        self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height/2 + self.mitsuhaJelloView.config.waveOffset);
+        
+    } completion:nil];
+    
+    
+    currentBackgroundMusicVC = (SPTUniversalController*)self;
+    
+    //  Copied from NowPlayingImpl
+    if(MSHColorFlowInstalled && MSHColorFlowSpotifyEnabled){
+        CFWSpotifyStateManager *stateManager = [%c(CFWSpotifyStateManager) sharedManager];
+        UIColor *backgroundColor = [stateManager.mainColorInfo.backgroundColor colorWithAlphaComponent:0.5];
+        [currentBackgroundMusicVC.mitsuhaJelloView updateWaveColor:backgroundColor subwaveColor:backgroundColor];
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    %orig;
+    [self.mitsuhaJelloView msdDisconnect];
+    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:3.5 initialSpringVelocity:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.mitsuhaJelloView.center = CGPointMake(self.mitsuhaJelloView.center.x, self.mitsuhaJelloView.frame.size.height + self.mitsuhaJelloView.config.waveOffset);
+    } completion:^(BOOL finished){
+        self.mitsuhaJelloView.shouldUpdate = false;
+    }];
+}
+
+%new
+-(MSHJelloView *)mitsuhaJelloView{
+    return objc_getAssociatedObject(self, @selector(mitsuhaJelloView));
+}
+
+%new
+-(void)setMitsuhaJelloView:(MSHJelloView *)mitsuhaJelloView{
+    objc_setAssociatedObject(self, @selector(mitsuhaJelloView), mitsuhaJelloView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+%new
+-(void)updateVolume:(NSNotification *)notification{
+    if(self.mitsuhaJelloView.config.enableDynamicGain){
+        float volume = [[[notification userInfo] objectForKey:@"AVSystemController_AudioVolumeNotificationParameter"] floatValue];
+        NSLog(@"[Mitsuha]: updateVolume: %lf", volume);
+        self.mitsuhaJelloView.config.gain = pow(volume*15, 2);
+    }
+}
+%end
+
 /*
 %hook SPTNowPlayingCoverArtViewCell
 

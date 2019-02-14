@@ -52,6 +52,15 @@
 
 @end
 
+@interface SPTNowPlayingScrollViewController : SPTUniversalController
+
+@end
+
+@interface SPTNowPlayingCoverArtImageContentView : UIView
+
+-(void)setImage:(UIImage *)image;
+
+@end
 /*@interface SPTNowPlayingCoverArtCotnentViewDelegate : UIView
 
 @property(retain, nonatomic) UIImage *cellContentRepresentation;
